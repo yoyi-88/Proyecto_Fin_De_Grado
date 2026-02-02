@@ -1,8 +1,6 @@
-# Tablas necesarias a añadir a cualquier base de datos para el control de sesión de usuarios.
 
+use fp;
 
-USE gesbank;
-DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users(
 
 	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
@@ -40,4 +38,3 @@ INSERT INTO roles VALUES
 (2, 'Editor', 'Sólo podrá consultar, modificar y añadir información. No podrá eliminar', default, default),
 (3, 'Registrado', 'Sólo podrá realizar consultas', default, default);
     
-

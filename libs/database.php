@@ -37,10 +37,27 @@
             
             } catch(PDOException $e) {
 
-                print_r ('Error de conexión: ' . $e->getMessage());
+                // Manejo centralizado de errores
+                $this->handleError($e);
+             
             }
 
         }
+
+    private function handleError(PDOException $e)
+    {
+        // Incluir y cargar el controlador de errores
+        $errorControllerFile = CONTROLLER_PATH . ERROR_CONTROLLER . '.php';
+        
+        if (file_exists($errorControllerFile)) {
+            require_once $errorControllerFile;
+            $controller = new Errores('DE BASE DE DATOS', 'Error de Conexión', $e->getMessage());
+            // $controller->renderError($e->getMessage());
+        } else {
+            // Fallback en caso de que el controlador de errores no exista
+            echo "Error crítico: " . $e->getMessage();
+        }
+    }
     }
 
 ?>

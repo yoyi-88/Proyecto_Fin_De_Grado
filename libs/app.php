@@ -2,11 +2,7 @@
 
 class App {
     
-    // Definir constantes para rutas
-    const CONTROLLER_PATH = 'controllers/';
-    const MODEL_PATH = 'models/';
-    const DEFAULT_CONTROLLER = 'main';
-    const ERROR_CONTROLLER = 'error';
+  
 
     public function __construct()
     {
@@ -15,8 +11,8 @@ class App {
         $url = explode('/', $url);
 
         // Determinar el controlador
-        $controllerName = (empty($url[0]) || $url[0] === 'index') ? self::DEFAULT_CONTROLLER : $url[0];
-        $controllerFile = self::CONTROLLER_PATH . $controllerName . '.php';
+        $controllerName = (empty($url[0]) || $url[0] === 'index') ? DEFAULT_CONTROLLER : $url[0];
+        $controllerFile = CONTROLLER_PATH . $controllerName . '.php';
 
         try {
             if (file_exists($controllerFile)) {
@@ -33,7 +29,8 @@ class App {
 
                 // Validar que el método exista
                 if (method_exists($controller, $methodName)) {
-                    call_user_func_array([$controller, $methodName], $params);
+                    $controller->$methodName($params);
+                    // call_user_func_array([$controller, $methodName], (array) $params);
                 } else {
                     throw new Exception("El método '{$methodName}' no existe en el controlador '{$controllerName}'.");
                 }
@@ -49,11 +46,11 @@ class App {
     private function handleError(Exception $e)
     {
         // Incluir y cargar el controlador de errores
-        $errorControllerFile = self::CONTROLLER_PATH . self::ERROR_CONTROLLER . '.php';
+        $errorControllerFile = CONTROLLER_PATH . ERROR_CONTROLLER . '.php';
         
         if (file_exists($errorControllerFile)) {
             require_once $errorControllerFile;
-            $controller = new Errores($e->getMessage());
+            $controller = new Errores('404', 'Recurso no existente', $e->getMessage());
             // $controller->renderError($e->getMessage());
         } else {
             // Fallback en caso de que el controlador de errores no exista

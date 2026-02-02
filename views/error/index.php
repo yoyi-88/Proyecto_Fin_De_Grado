@@ -11,10 +11,10 @@
 		<!-- Estilo card de bootstrap -->
 		<div class="card">
 			<div class="card-header">
-				<h4>ERROR 404</h4>
+				<h4>ERROR <?= $this->tipo ?></h4>
 			</div>
 			<div class="card-body">
-				<h5 class="card-subtitle mb-2 text-body-secondary">Reucurso No Existente</h5>
+				<h5 class="card-subtitle mb-2 text-body-secondary"><?= $this->titulo ?></h5>
                 <p class="lead"><?php echo $this->mensaje ?></p>
 
 			</div>
