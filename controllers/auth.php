@@ -14,13 +14,13 @@ class Auth extends Controller
     }
 
     /*
-        Método:  login()
-        Descripción: Muestra el formulario de login 
-        URL asociada: auth/login
-        Vista asociada: views/auth/login/index.php
-        Modelo asociado: models/auth.model.php
+            Método:  login()
+            Descripción: Muestra el formulario de login 
+            URL asociada: auth/login
+            Vista asociada: views/auth/login/index.php
+            Modelo asociado: models/auth.model.php
            
-    */
+        */
 
     function login()
     {
@@ -37,9 +37,9 @@ class Auth extends Controller
         $this->view->pass = null;
 
         // Comprobar si existe alguna notificación o mensaje
-        if (isset($_SESSION['notify'])) {
-            $this->view->notify = $_SESSION['notify'];
-            unset($_SESSION['notify']);
+        if (isset($_SESSION['mensaje'])) {
+            $this->view->mensaje = $_SESSION['mensaje'];
+            unset($_SESSION['mensaje']);
         }
 
         // Verificar si existe algún error
@@ -70,14 +70,6 @@ class Auth extends Controller
     }
 
     /*
-        Método:  register()
-        Descripción: Muestra el formulario de registro 
-        URL asociada: auth/register
-        Vista asociada: views/auth/register/index.php
-        Modelo asociado: models/auth.model.php 
-    */
-
-    /*
             Método: validate()
             Descripción: Recibe los datos de autenticación para validarla: emial, pass
                 - Validar usuario mediante email y pass
@@ -91,7 +83,7 @@ class Auth extends Controller
                 - pass
                 - csrf_token
     */
-    public function validate()
+    public function validate_login()
     {
 
         // inicio o continúo sesión
@@ -147,9 +139,6 @@ class Auth extends Controller
             }
         }
 
-        
-
-
         // Fin Validación
 
         // Si hay errores vuelvo al formulario de autenticación
@@ -170,9 +159,12 @@ class Auth extends Controller
         }
 
         // Autentiación correcta
+
+        // Regenero la sessión para evitar fijación de sesión
+        session_regenerate_id(true);
+
         // - Almaceno los datos del usuario en la sesión
         // - Redirecciono al panel de control de libros
-
 
         // Almaceno los datos del usuario en la sesión
         $_SESSION['user_id'] = $user->id;
@@ -184,224 +176,188 @@ class Auth extends Controller
         $_SESSION['role_name'] = $this->model->get_name_role_user($_SESSION['role_id']);
 
          // Generar mensaje de inicio de sesión
-        $_SESSION['notify'] = "Usuario ". $user->name. " ha iniciado sesión.";
+        $_SESSION['mensaje'] = "Usuario ". $user->name. " ha iniciado sesión.";
 
         // redirección al panel de control
         header("location:". URL. "libro");
         exit();
     }
 
-    function register() {
-        sec_session_start();
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-
-        // Inicializar valores para la vista (por si hay errores y volvemos)
-        $this->view->name = $_SESSION['name'] ?? null;
-        $this->view->email = $_SESSION['email'] ?? null;
-        $this->view->errors = $_SESSION['errors'] ?? [];
+    /*
+        Método: register()
+        Descripción: permite el autoregistro. 
+        Muestra el formulario de registro con los campos:
+            - Name
+            - Email
+            - Password
+    */
+    public function register() {
         
-        unset($_SESSION['errors'], $_SESSION['name'], $_SESSION['email']);
+        // inicio o continuo la sesión
+        sec_session_start();
 
-        $this->view->title = "Registro de Nuevo Usuario";
+        // Creo un token CSRF
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+                
+        // Inicializo los campos del formulario
+        $this->view->name = null;
+        $this->view->email = null;
+        $this->view->password = null;
+
+        // Comrpuebo si hay errores en la validación
+        if (isset($_SESSION['errors'])) {
+
+            // Creo la propiedad error en la vista
+            $this->view->errors = $_SESSION['errors'];
+
+            // Retroalimento los campos del  formulario
+            $this->view->name = $_SESSION['name'];
+            $this->view->email = $_SESSION['email'];
+            $this->view->password = $_SESSION['password'];
+
+            // Creo la propiedad mensaje de error
+            $this->view->error = 'Revisar formulario, hay errores de validación';
+
+            // Elimino la variable de sesión errors
+            unset($_SESSION['errors']);
+
+            // Elimino la variable de sesión libro
+            unset($_SESSION['name']);
+            unset($_SESSION['email']);
+            unset($_SESSION['password']);
+        }
+
+        // Creo la propiead título
+        $this->view->title = "Registro de Usuarios";
+
+        // Cargo la vista Registro de usuarios
         $this->view->render('auth/register/index');
+
     }
 
+    /*
+        Método validete_regiser()
+
+        Permite:
+            - Validar nuevo usuario
+            - En caso de error de validación. Retroalimenta el formulario y muestra errores
+            - En caso de validación. Añade usuario con perfil de registrado
+
+        url asociada: /auth/validate_register()
+        
+        POST: detalles del nuevo usuario
+
+            - name
+            - email
+            - password
+            - password-confirm
+    */
     public function validate_register(){
-        // Inicio o continúo sesión
+        
+        // inicio o continúo sesión
         sec_session_start();
 
-        // Verificar el token CSRF para evitar ataques cross-site
+        // Verificar el token CSRF
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
             $this->handleError();
         }
 
-        // Recogida y saneamiento de datos
-        $name  = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
-        $pass  = $_POST['pass'] ?? '';
-        $pass_confirm = $_POST['pass_confirm'] ?? '';
+        // Recogemos los detalles del formulario saneados
+        // Prevenir ataques XSS
+        $name = filter_var($_POST['name'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
+        $password = filter_var($_POST['password'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $password_confirm = filter_var($_POST['password_confirm'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
 
-        // Validación de los datos
+        // Validación del formulario de registro
+
+        // Creo un array para almacenar los errores
         $errors = [];
 
-        // Validar Nombre
+        // Validación name
+        // Reglas: obligatorio, longitud mínima 5 caracteres, 
+        // longitud máxima 20 caracteres, clave secundaria
         if (empty($name)) {
-            $errors['name'] = "El nombre es obligatorio";
+            $errors['name'] = 'El nombre es obligatorio';
+        } else if ((strlen($name) < 5) and (strlen($name) > 20)) {
+            $errors['name'] = 'La longitud del nombre debe estar entre 5 y 20 caracteres';
+        } else if ($this->model->validate_exists_name($name)) {
+            $errors['name'] = 'Name ya ha sido registrado';
         }
 
-        // Validar Email
+        // Validación email
+        // Reglas: obligatorio, formato email, clave secundaria
         if (empty($email)) {
-            $errors['email'] = "El email es obligatorio";
+            $errors['email'] = 'El email es obligatorio';
         } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = "Formato de email no válido";
+            $errors['email'] = 'El formato del email no es correcto';
         } else if ($this->model->validate_exists_email($email)) {
-            $errors['email'] = "Este email ya está registrado";
+            $errors['email'] = 'El email ya ha sido registrado';
+        }
+       
+        // Validación password
+        // Reglas: obligatorio, longitud mínima 7 caracteres, campos coincidentes
+        if (empty($password)) {
+            $errors['password'] = 'La contraseña es obligatoria';
+        } else if (strlen($password) < 7) {
+            $errors['password'] = 'La contraseña debe tener al menos 7 caracteres';
+        } else if (strcmp($password, $password_confirm) !== 0 ) {
+            $errors['password'] = 'Las contraseñas no son coincidentes';
         }
 
-        // Validar Password
-        if (empty($pass)) {
-            $errors['pass'] = "El password es obligatorio";
-        } else if (strlen($pass) < 7) {
-            $errors['pass'] = "La contraseña debe tener al menos 7 caracteres";
-        } else if ($pass !== $pass_confirm) {
-            $errors['pass_confirm'] = "Las contraseñas no coinciden";
-        }
-
-        // 4. Manejo de errores de validación
+        // Si hay errores
         if (!empty($errors)) {
+
+            // Formulario no ha sido validado
+            // Tengo que redireccionar al formulario de nuevo
+
+            // Creo la variable de sessión name con los datos del formulario
+            $_SESSION['name'] = $name;
+
+            // Creo la variable de sessión email con los datos del formulario
+            $_SESSION['email'] = $email;
+
+            // Creo la variable de sessión password con los datos del formulario
+            $_SESSION['password'] = $password;
+
+            // Creo la variable de sessión error con los errores
             $_SESSION['errors'] = $errors;
-            $_SESSION['name']   = $name;
-            $_SESSION['email']  = $email;
 
-            header('Location: ' . URL . 'auth/register');
+            // redireciona al formulario de nuevo
+            header('location:' . URL . 'auth/register');
             exit();
         }
 
-        // 5. Registro exitoso
-        // Encriptamos la contraseña antes de guardarla
-        $password_hashed = password_hash($pass, PASSWORD_BCRYPT);
+        // Formulario validado
+        // Añadir usuario a la base de datos
+        // Obtengo el id asignado al nuevo usuario
+        // Asigno el rol de registrado al nuevo usuario
+        // 3 es el id del rol de usuario registrado
+        $id = $this->model->create($name, $email, $password);
 
-        // Llamamos al modelo para insertar (el método create que hicimos antes)
-        if ($this->model->create($name, $email, $password_hashed)) {
-            $_SESSION['notify'] = "Registro completado con éxito. Ya puedes iniciar sesión.";
-            header('Location: ' . URL . 'auth/login');
-            exit();
-        } else {
-            // Error inesperado en la base de datos
-            header('Location: ' . URL . 'errores');
-            exit();
-        }
+        // Genero mensaje de éxito
+        $_SESSION['mensaje'] = 'Usuario registrado correctamente';
+
+        // Redireciona al formulario de login
+        header('location:' . URL . 'auth/login');
+        exit();
     }
 
     /*
         Método: logout()
-        Descripción: Cierra la sesión de forma segura
+        Descripción: cierra sesión del usuario autenticado y redirigimos al home de la aplicación
     */
     public function logout() {
+    // inicio o continuo la sesión
         sec_session_start();
-        // Vaciar el array de sesión
-        $_SESSION = [];
-        // Destruir la cookie de sesión si existe
-        if (ini_get("session.use_cookies")) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000,
-                $params["path"], $params["domain"],
-                $params["secure"], $params["httponly"]
-            );
-        }
-        // Destruir la sesión
-        session_destroy();
-        // Redirigir al login
-        header("location:" . URL . "auth/login");
+
+        // Destruyo la sesión
+        sec_session_destroy();
+
+        // Redirección al formulario de login
+        header('location:' . URL . 'index');
         exit();
     }
-
-    // Métodos para el perfil 
-    public function show_profile() {
-        sec_session_start();
-        if (!isset($_SESSION['user_id'])) header("location:" . URL . "auth/login");
-        
-        $this->view->title = "Perfil de Usuario";
-        $this->view->user = $this->model->get_user_id($_SESSION['user_id']);
-        $this->view->render('perfil/show/index');
-    }
-
-    // Métodos de Edición de Perfil 
-
-    public function edit_profile() {
-        sec_session_start();
-        if (!isset($_SESSION['user_id'])) header("location:" . URL . "auth/login");
-
-        $this->view->title = "Editar Perfil";
-        $this->view->user = $this->model->get_user_id($_SESSION['user_id']);
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // Nuevo token para el formulario
-        
-        $this->view->errors = $_SESSION['errors'] ?? [];
-        unset($_SESSION['errors']);
-
-        $this->view->render('perfil/edit/index');
-    }
-
-    public function validate_profile() {
-        sec_session_start();
-        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) $this->handleError();
-
-        $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
-        $id = $_SESSION['user_id'];
-
-        $errors = [];
-        if (empty($name)) $errors['name'] = "El nombre es obligatorio";
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = "Email no válido";
-        } elseif ($this->model->validate_unique_email($id, $email)) {
-            $errors['email'] = "Este email ya está en uso por otro usuario";
-        }
-
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header("location:" . URL . "auth/edit_profile");
-            exit();
-        }
-
-        if ($this->model->update_profile($id, $name, $email)) {
-            $_SESSION['user_name'] = $name; // Actualizar nombre en la barra de menú
-            $_SESSION['notify'] = "Perfil actualizado con éxito";
-            header("location:" . URL . "auth/show_profile");
-        }
-    }
-
-    // Métodos de Cambio de Contraseña
-
-    public function change_password() {
-        sec_session_start();
-        if (!isset($_SESSION['user_id'])) header("location:" . URL . "auth/login");
-
-        $this->view->title = "Cambiar Contraseña";
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        $this->view->errors = $_SESSION['errors'] ?? [];
-        unset($_SESSION['errors']);
-
-        $this->view->render('perfil/password/index');
-    }
-
-    public function validate_password() {
-        sec_session_start();
-        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) $this->handleError();
-
-        $pass_actual = $_POST['pass_actual'] ?? '';
-        $pass_nuevo = $_POST['pass_nuevo'] ?? '';
-        $pass_confirm = $_POST['pass_confirm'] ?? '';
-        $id = $_SESSION['user_id'];
-
-        $errors = [];
-        $user_db = $this->model->get_password_by_id($id);
-
-        // Validar contraseña actual
-        if (!password_verify($pass_actual, $user_db->password)) {
-            $errors['pass_actual'] = "La contraseña actual no es correcta";
-        }
-        // Validar nueva contraseña
-        if (strlen($pass_nuevo) < 7) {
-            $errors['pass_nuevo'] = "Mínimo 7 caracteres";
-        } elseif ($pass_nuevo !== $pass_confirm) {
-            $errors['pass_confirm'] = "Las contraseñas no coinciden";
-        }
-
-        if (!empty($errors)) {
-            $_SESSION['errors'] = $errors;
-            header("location:" . URL . "auth/change_password");
-            exit();
-        }
-
-        $hashed_pass = password_hash($pass_nuevo, PASSWORD_BCRYPT);
-        if ($this->model->update_password($id, $hashed_pass)) {
-            $_SESSION['notify'] = "Contraseña cambiada correctamente";
-            header("location:" . URL . "auth/show_profile");
-        }
-    }
-
-    
     
 
 

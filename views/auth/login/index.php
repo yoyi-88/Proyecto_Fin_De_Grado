@@ -20,7 +20,7 @@
                 <div class="card">
                     <div class="card-header">LOGIN</div>
                     <div class="card-body">
-                        <form method="POST" action="<?= URL ?>auth/validate">
+                        <form method="POST" action="<?= URL ?>auth/validate_login">
                             
                             <!-- token csrf -->
                             <input type="hidden" name="csrf_token"

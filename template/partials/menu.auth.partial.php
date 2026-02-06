@@ -1,40 +1,38 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+<!-- Navigation -->
+<!-- Menú principal del proyecto -->
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="<?= URL ?>index">MVC - Gestión FP</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="#">MVC - Gestión FP</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+      aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+    <div class="collapse navbar-collapse" id="navbarScroll">
+      <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="<?= URL ?>index">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="<?= URL ?>alumnos">Alumnos</a>
+          <a class="nav-link active" href="<?= URL ?>libro">Libros</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="#">Cursos</a>
+          <a class="nav-link active" href="<?= URL ?>autor">Autores</a>
         </li>
+        <!-- Definimos el enlace a usuarios para que solo puedan entrar administradores -->
+        <?php if (in_array($_SESSION['role_id'], [1])): ?>
+          <li class="nav-item">
+            <a class="nav-link active" href="<?= URL ?>user">Usuarios</a>
+          </li>
+        <?php endif; ?>
       </ul>
       <div class="d-flex">
-        <ul class="nav navbar-nav flex-row  ml-auto">
-            <li class="nav-item dropdown">
-               
-                <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-bounding-box"><?= str_pad($_SESSION['name_user'], 20, ' __ ', STR_PAD_LEFT) ?></i>
-                    
-                </a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="<?= URL ?>logout">Logout</a>
-                    <a class="dropdown-item" href="<?= URL ?>edit_user">Modificar Perfil</a>
-                    <a class="dropdown-item" href="<?= URL ?>edit_password">Cambiar Password</a>
-                    <a class="dropdown-item" href="<?= URL ?>delete_user">Eliminar Perfil</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#"><?= $_SESSION['name_rol'] ?></a>
-                </div>
-            </li>
-
-        </ul>
+        <div class="collapse navbar-collapse" id="exCollapsingNavbar">
+          <ul class="nav navbar-nav flex-row justify-content-between ml-auto">
+            <li class="nav-item"><a href="<?= URL ?>account" class="nav-link active"><?= $_SESSION['user_name'] . ' |'?></a></li>
+            <li class="nav-item"><a href="<?= URL ?>auth/logout" class="nav-link active">Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

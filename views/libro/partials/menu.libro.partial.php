@@ -8,10 +8,14 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="<?= URL ?>libro/new">Nuevo</a>
+                    <a class="nav-link 
+                    <?= in_array($_SESSION['role_id'], $GLOBALS['libro']['new'])? 'active':'disabled' ?>" 
+                    aria-current="page" href="<?= URL ?>libro/new">Nuevo</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle 
+                    <?= in_array($_SESSION['role_id'], $GLOBALS['libro']['order'])? 'active':'disabled' ?>" 
+                    href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Ordenar por
                     </a>
                     <ul class="dropdown-menu">

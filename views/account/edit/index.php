@@ -8,7 +8,7 @@
 
 <body>
     <!-- Menú fijo superior -->
-    <?php require_once 'template/partials/menu.principal.partial.php' ?>
+    <?php require_once 'template/partials/menu.auth.partial.php' ?>
 
     <!-- Capa Principal -->
     <div class="container">
@@ -18,12 +18,15 @@
                 <?php require_once("template/partials/mensaje.partial.php") ?>
                 <?php require_once("template/partials/error.partial.php") ?>
                 <div class="card">
-                    <div class="card-header">Registro Nuevo Usuario</div>
+                    <div class="card-header"><?= $this->title ?></div>
+                    <div class="card-header">
+                        <?php require_once("views/account/partials/menu.partial.php") ?>
+                    </div>
                     <div class="card-body">
-                        <form method="POST" action="<?= URL ?>auth/validate_register">
-                            <!-- token csrf -->
-                            <input type="hidden" name="csrf_token"
-                                value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                        <form action="<?= URL ?>account/update?>" method="post">
+
+                            <!-- token crsf -->
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
                             <!-- campo name -->
                             <div class="mb-3 row">
@@ -31,11 +34,11 @@
                                 <div class="col-md-6">
                                     <input id="name" type="name"
                                         class="form-control <?= (isset($this->errors['name'])) ? 'is-invalid' : null ?>"
-                                        name="name" value="<?= htmlspecialchars($this->name); ?>" required
+                                        name="name" value="<?= htmlspecialchars($this->account->name); ?>" required
                                         autocomplete="name" autofocus>
-                                    <!-- control de errores -->
+                                    <!-- control de errores --> 
                                     <span class="form-text text-danger" role="alert">
-                                        <?= $this->errors['name']  ??= '' ?>
+                                        <?= $this->errors['name'] ??= '' ?>
                                     </span>
                                 </div>
                             </div>
@@ -46,50 +49,31 @@
                                 <div class="col-md-6">
                                     <input id="email" type="email"
                                         class="form-control <?= (isset($this->errors['email'])) ? 'is-invalid' : null ?>"
-                                        name="email" value="<?= htmlspecialchars($this->email); ?>" required
+                                        name="email" value="<?= htmlspecialchars($this->account->email); ?>" required
                                         autocomplete="email" autofocus>
                                     <!-- control de errores -->
                                     <span class="form-text text-danger" role="alert">
-                                        <?= $this->errors['email']  ??= '' ?>
+                                        <?= $this->errors['email'] ??= '' ?>
                                     </span>
                                 </div>
                             </div>
 
-                            <!-- password -->
+
+                            <!-- campo rol -->
                             <div class="mb-3 row">
-                                <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
-
+                                <label class="col-md-4 col-form-label text-md-right">Rol</label>
                                 <div class="col-md-6">
-                                    <input id="password" type="password"
-                                        class="form-control <?= (isset($this->errors['password'])) ? 'is-invalid' : null ?>"
-                                        name="password" value="<?= htmlspecialchars($this->password)  ?>" required
-                                        autocomplete="current-password">
-
-                                    <!-- control de errores -->
-                                    <span class="form-text text-danger" role="alert">
-                                        <?= $this->errors['password']  ??= null ?>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- password confirmación -->
-                            <div class="mb-3 row">
-                                <label for="password_confirm" class="col-md-4 col-form-label text-md-right">Confirmar Password</label>
-
-                                <div class="col-md-6">
-                                    <input id="password_confirm" type="password"
-                                        class="form-control"
-                                        name="password_confirm" required
-                                        autocomplete="password_confirm">
+                                    <input type="text" class="form-control" name="role_name"
+                                        value="<?= htmlspecialchars($_SESSION['role_name']); ?>" disabled>
                                 </div>
                             </div>
 
                             <!-- botones de acción -->
                             <div class="mb-3 row mb-0">
                                 <div class="col-md-8 offset-md-4">
-                                    <a class="btn btn-secondary" href="<?= URL ?>auth/login" role="button">Cancelar</a>
-                                    <button type="reset" class="btn btn-secondary">Reset</button>
-                                    <button type="submit" class="btn btn-primary">Registrar</button>
+                                    <a class="btn btn-secondary" href="<?=URL?>account" role="button">Cancelar</a>
+                                    <button type="reset" class="btn btn-secondary" >Reset</button>
+                                    <button type="submit" class="btn btn-primary">Actualizar</button>
                                 </div>
                             </div>
                         </form>

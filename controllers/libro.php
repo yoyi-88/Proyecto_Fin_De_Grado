@@ -526,7 +526,7 @@ class Libro extends Controller
 
     /*
         Método: search()
-        Descripción: Busca a partir de una expresión en todos los detalles de los libros
+        Jcripción: Busca a partir de una expresión en todos los detalles de los libros
         url asociada: libro/search
     */
     public function search()

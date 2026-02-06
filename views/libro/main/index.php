@@ -8,7 +8,7 @@
 
 <body>
     <!-- Menú fijo superior -->
-    <?php require_once("template/partials/menu.partial.php") ?>
+    <?php require_once("template/partials/menu.auth.partial.php") ?>
 
     <!-- Capa Principal -->
     <div class="container">
