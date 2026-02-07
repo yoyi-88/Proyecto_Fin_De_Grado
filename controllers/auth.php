@@ -74,7 +74,7 @@ class Auth extends Controller
             Descripción: Recibe los datos de autenticación para validarla: emial, pass
                 - Validar usuario mediante email y pass
                 - En caso de error de valiación. Restroalimenta el formulario y muestra errores
-                - En caso de validación. Inicia sesión segura y redirecciona a la página de libro
+                - En caso de validación. Inicia sesión segura y redirecciona a la página main
 
             url asociada: auth/validate_login
 
@@ -164,7 +164,7 @@ class Auth extends Controller
         session_regenerate_id(true);
 
         // - Almaceno los datos del usuario en la sesión
-        // - Redirecciono al panel de control de libros
+        // - Redirecciono al main de la aplicación
 
         // Almaceno los datos del usuario en la sesión
         $_SESSION['user_id'] = $user->id;
@@ -179,7 +179,7 @@ class Auth extends Controller
         $_SESSION['mensaje'] = "Usuario ". $user->name. " ha iniciado sesión.";
 
         // redirección al panel de control
-        header("location:". URL. "libro");
+        header("location:". URL. "main");
         exit();
     }
 

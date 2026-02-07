@@ -6,12 +6,11 @@
     <title><?= $this->title ?? 'Chef Privado' ?></title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
-    <link href="<?= URL ?>public/css/style.css" rel="stylesheet">
-    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <link href="<?= URL ?>public/css/style.css" rel="stylesheet">
 
     <style>
         body {
@@ -19,31 +18,27 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            padding-top: 60px; /* Espacio para el menú fixed-top */
+            padding-top: 56px; /* Ajuste fino para la navbar */
+            background-color: #f8f9fa; /* Fondo gris muy suave para toda la web */
         }
-        h1, h2, h3, h4, .navbar-brand {
-            font-family: 'Playfair Display', serif;
-        }
-        main {
-            flex: 1; /* Esto empuja el footer hacia abajo */
-        }
+        h1, h2, h3, h4, .navbar-brand { font-family: 'Playfair Display', serif; }
+        main { flex: 1; }
     </style>
 </head>
 <body>
 
     <?php include 'template/partials/menu.principal.partial.php'; ?>
 
-    <?php include 'template/partials/cabecera.partial.php'; ?>
-
-    <main class="container">
-        
-        <?php if (isset($this->mensaje)): ?>
-            <?php include 'template/partials/mensaje.partial.php'; ?>
-        <?php endif; ?>
-        
-        <?php if (isset($this->error)): ?>
-            <?php include 'template/partials/error.partial.php'; ?>
-        <?php endif; ?>
+    <main>
+        <div class="container mt-3">
+            <?php if (isset($this->mensaje)): ?>
+                <?php include 'template/partials/mensaje.partial.php'; ?>
+            <?php endif; ?>
+            
+            <?php if (isset($this->error)): ?>
+                <?php include 'template/partials/error.partial.php'; ?>
+            <?php endif; ?>
+        </div>
 
         <?php include 'views/' . $this->view . '.php'; ?>
         
@@ -52,6 +47,5 @@
     <?php include 'template/partials/footer.partial.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
