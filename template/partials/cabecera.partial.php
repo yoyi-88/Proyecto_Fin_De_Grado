@@ -1,12 +1,10 @@
 <header>
     <hgroup>
-        <!-- Titulos y subtitulos -->
-        <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h4 class="display-7">Model Vista Controlador PRO</h4>
-            <p class="lead">Tema 6 - DWES - Curso 25/26</p>
-            <p>Proyecto 6.2 Gestión Libros - geslibros</p>
-        </div>
+        <div class="jumbotron jumbotron-fluid bg-light py-4 mb-4 shadow-sm">
+            <div class="container">
+                <h4 class="display-6">De Mi Casa a la Tuya</h4>
+                <p class="lead">Experiencias gastronómicas exclusivas</p>
+            </div>
         </div>
     </hgroup>
 </header>

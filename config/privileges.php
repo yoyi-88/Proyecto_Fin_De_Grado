@@ -1,39 +1,35 @@
 <?php
 
     /*
-        Definimos los privilegios de la aplicación
+        Privilegios para el controlador MENU (La Carta)
+        -----------------------------------------------
+        - Render: Todos pueden ver los menús (Chef y Clientes)
+        - Gestión (New/Edit/Delete): Solo el Administrador (Chef)
+    */
+    $GLOBALS['menu']['render'] = [1, 2, 3];
+    $GLOBALS['menu']['new']    = [1];
+    $GLOBALS['menu']['create'] = [1];
+    $GLOBALS['menu']['edit']   = [1];
+    $GLOBALS['menu']['update'] = [1];
+    $GLOBALS['menu']['delete'] = [1];
+    $GLOBALS['menu']['show']   = [1, 2, 3]; 
 
-        Recordamos los perfiles:
-        - 1: Administrador
-        - 2: Editor
-        - 3: Registrado
-
-        Recordamos los controladores o recursos:
-        - 1: Libro
-
-        Los privilegios son:
-        - 1: render
-        - 2: new
-        - 3: edit
-        - 4: delete
-        - 5: show
-        - 6: order
-        - 7: search
-
-        Los perfiles se asignarán mediante un array asociativo, 
-        donde la clave principal se corresponde con el controlador 
-        la clave secundaria con el  método.
-
-        $GLOBALS['libro']['main] = [1, 2, 3];
-
-        Se asignan los perfiles que tienen acceso a un determinado método del controlador libro.
-
-    */ 
-    $GLOBALS['libro']['render'] = [1, 2, 3];
-    $GLOBALS['libro']['new'] = [1, 2];
-    $GLOBALS['libro']['edit'] = [1, 2];
-    $GLOBALS['libro']['delete'] = [1];
-    $GLOBALS['libro']['show'] = [1, 2, 3];
-    $GLOBALS['libro']['search'] = [1, 2, 3];
-    $GLOBALS['libro']['order'] = [1, 2, 3];
+    /*
+        Privilegios para el controlador CITAS (Reservas)
+        ------------------------------------------------    
+        Render: 
+            - Chef (1): Ve todas.
+            - Cliente (3): Ve las suyas.
+        New/Create: 
+            - Cliente (3): Para reservar.
+            - Chef (1): Por si quiere agendar manualmente por teléfono.
+        Edit/Update (Cambiar estado): 
+            - Solo Chef (1).
+    */
+    $GLOBALS['citas']['render'] = [1, 2, 3];
+    $GLOBALS['citas']['new']    = [1, 3];
+    $GLOBALS['citas']['create'] = [1, 3];
+    $GLOBALS['citas']['edit']   = [1]; 
+    $GLOBALS['citas']['update'] = [1];
+    $GLOBALS['citas']['show']   = [1, 3]; // Ver detalle de una cita
 ?>

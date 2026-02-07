@@ -1,8 +1,9 @@
-<!-- Footer -->
- 
-<footer class="footer mt-auto py-3 fixed-bottom bg-light">
-  <div class="container">
-    <span class="text-muted">© 2025 
-        Yoël Gómez Benítez - DWES - 2º DAW - Curso 25/26</span>
+<footer class="footer mt-auto py-3 bg-dark text-white-50">
+  <div class="container text-center">
+    <small>
+        &copy; <?= date('Y') ?> Chef Privado - Desarrollo Web Entorno Servidor
+        <br>
+        <span class="text-white">Proyecto Fin de Grado</span>
+    </small>
   </div>
 </footer>

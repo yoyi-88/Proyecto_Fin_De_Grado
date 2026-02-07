@@ -9,7 +9,10 @@
 
         function render($nombre) {
 
-            require 'views/' . $nombre . '.php';
+            //require 'views/' . $nombre . '.php';
+            $this->view = $nombre;
+
+            require 'template/layouts/main.layout.php';
         }
 
     } 
