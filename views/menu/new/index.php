@@ -8,7 +8,6 @@
 
 <body>
     <!-- Menú fijo superior -->
-    <?php require_once 'template/partials/menu.principal.partial.php' ?>
 
     <!-- Capa Principal -->
     <div class="container">
@@ -74,7 +73,6 @@
 
     <!-- /.container -->
 
-    <?php require_once 'template/partials/footer.partial.php' ?>
     <?php require_once 'template/layouts/javascript.layout.php' ?>
 
 </body>

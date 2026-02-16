@@ -30,15 +30,6 @@
     <?php include 'template/partials/menu.principal.partial.php'; ?>
 
     <main>
-        <div class="container mt-3">
-            <?php if (isset($this->mensaje)): ?>
-                <?php include 'template/partials/mensaje.partial.php'; ?>
-            <?php endif; ?>
-            
-            <?php if (isset($this->error)): ?>
-                <?php include 'template/partials/error.partial.php'; ?>
-            <?php endif; ?>
-        </div>
 
         <?php include 'views/' . $this->view . '.php'; ?>
         
