@@ -25,9 +25,9 @@ class authModel extends Model {
         // Generamos select 
         $sql = "SELECT id, name, email, password FROM users WHERE email = :email LIMIT 1";
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $dmcalt = $this->db->connect();
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $dmcalt->prepare($sql);
         // Tipo fetch
          $stmt->setFetchMode(PDO::FETCH_OBJ);
         // Vincular los parámetros
@@ -64,10 +64,10 @@ class authModel extends Model {
             $sql = "SELECT role_id FROM roles_users WHERE user_id = :user_id LIMIT 1"; 
 
             // conectamos con la base de datos
-            $fp = $this->db->connect();
+            $dmcalt = $this->db->connect();
 
             // ejecuto prepare
-            $stmt = $fp->prepare($sql);
+            $stmt = $dmcalt->prepare($sql);
 
             // Tipo de fetch
             $stmt->setFetchMode(PDO::FETCH_OBJ);
@@ -109,10 +109,10 @@ class authModel extends Model {
             $sql = "SELECT name FROM roles WHERE id = :role_id LIMIT 1"; 
 
             // conectamos con la base de datos
-            $fp = $this->db->connect();
+            $dmcalt = $this->db->connect();
 
             // ejecuto prepare
-            $stmt = $fp->prepare($sql);
+            $stmt = $dmcalt->prepare($sql);
 
             // Tipo de fetch
             $stmt->setFetchMode(PDO::FETCH_OBJ);
@@ -147,9 +147,9 @@ class authModel extends Model {
         // Generamos select 
         $sql = "SELECT email FROM users WHERE email = :email";
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $dmcalt = $this->db->connect();
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $dmcalt->prepare($sql);
         // Vincular los parámetros
         $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
         // Ejecutamos sql
@@ -186,10 +186,10 @@ class authModel extends Model {
 
 
             // conectamos con la base de datos
-            $fp = $this->db->connect();
+            $dmcalt = $this->db->connect();
 
             // ejecuto prepare
-            $stmt = $fp->prepare($sql);
+            $stmt = $dmcalt->prepare($sql);
 
             // vinculamos parámetros
             $stmt->bindParam(':name', $name, PDO::PARAM_STR, 50);
@@ -214,7 +214,7 @@ class authModel extends Model {
         Método: create()
         Descripción: Crea nuevo usuario en la tabla user y le asigna rol de usuario registrado (id = 3)
         Observaciones: Realizar en una transacción puesto que esta operación afecta 
-            a más de una tabla de la base de datos fp: users y roles_users
+            a más de una tabla de la base de datos dmcalt: users y roles_users
     */
     public function create($name, $email, $password)
     {
@@ -232,13 +232,13 @@ class authModel extends Model {
             VALUES (:name, :email, :password)"; 
 
             // conectamos con la base de datos
-            $fp = $this->db->connect();
+            $dmcalt = $this->db->connect();
 
             // iniciamos transacción
-            $fp->beginTransaction();
+            $dmcalt->beginTransaction();
 
             // ejecuto prepare
-            $stmt = $fp->prepare($sql);
+            $stmt = $dmcalt->prepare($sql);
 
             // vinculamos parámetros
             $stmt->bindParam(':name', $name, PDO::PARAM_STR, 50);
@@ -249,7 +249,7 @@ class authModel extends Model {
             $stmt->execute();
 
             // obtengo id del usuario que se acaba de registrar
-            $ultimo_id = $fp->lastInsertId();
+            $ultimo_id = $dmcalt->lastInsertId();
 
             // Proceso 2: Añadir el rol de usuario registrado (id = 3) en la tabla roles_users
             // sentencia sql
@@ -257,7 +257,7 @@ class authModel extends Model {
             VALUES (:user_id, :role_id)"; 
 
             // ejecuto prepare
-            $stmt = $fp->prepare($sql);
+            $stmt = $dmcalt->prepare($sql);
 
             // rol usuario registrado (id = 3)
             $role_id = 3;
@@ -270,7 +270,7 @@ class authModel extends Model {
             $stmt->execute();
 
             // confirmamos transacción
-            $fp->commit();
+            $dmcalt->commit();
 
             // Devolvermos el último id del usuario registrado
             return $ultimo_id;
@@ -279,7 +279,7 @@ class authModel extends Model {
         } catch (PDOException $e) {
 
             // Deshago la transacción
-            $fp->rollBack();
+            $dmcalt->rollBack();
 
             // Manejo del error
             $this->handleError($e); 

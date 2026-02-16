@@ -2,7 +2,7 @@
 # Configuración básica aplicación MVC
 
 # Ruta absoluta del proyecto
-define('URL', 'https://localhost/PFDG/');
+define('URL', 'https://localhost/Proyecto_Fin_De_Grado/');
 
 
 # Constantes de configuración de la aplicación
