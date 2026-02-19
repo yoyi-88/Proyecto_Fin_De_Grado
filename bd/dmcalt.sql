@@ -60,7 +60,3 @@ INSERT INTO roles (id, name, description) VALUES
 (2, 'Editor', 'Ayudante de cocina (opcional)'),
 (3, 'Cliente', 'Usuario registrado que puede reservar');
 
--- Insertar Usuario Chef (Password: admin123)
-INSERT INTO users (id, name, email, password) VALUES 
-(1, 'ChefAlejandro', 'admin@chef.com', '$2y$10$e.g./k.g... (hash generado con password_hash)');
-INSERT INTO roles_users VALUES (1, 1);
