@@ -55,7 +55,7 @@ Si deseas probar la aplicación en tu máquina local:
 
 1.  Clona este repositorio:
     ```bash
-    git clone [https://github.com/yoyi-88/Proyecto_Fin_De_Grado.git](https://github.com/yoyi-88/Proyecto_Fin_De_Grado.git)
+    git clone https://github.com/yoyi-88/Proyecto_Fin_De_Grado.git
     ```
 2.  Importa la base de datos:
     * Crea una base de datos llamada `dmcalt` en tu SGBD (ej. phpMyAdmin).
