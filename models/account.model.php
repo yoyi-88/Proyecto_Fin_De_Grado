@@ -27,7 +27,7 @@ class accountModel extends Model
         try {
 
             // sentencia sql
-            $sql = "SELECT name, email, password FROM Users WHERE id = :id LIMIT 1"; 
+            $sql = "SELECT name, email, password FROM users WHERE id = :id LIMIT 1"; 
 
             // conectamos con la base de datos
             $fp = $this->db->connect();
@@ -72,7 +72,7 @@ class accountModel extends Model
         try {
 
             // sentencia sql
-            $sql = "UPDATE Users SET name = :name, email = :email WHERE id = :id";
+            $sql = "UPDATE users SET name = :name, email = :email WHERE id = :id";
 
             // conectamos con la base de datos
             $fp = $this->db->connect();
@@ -112,7 +112,7 @@ class accountModel extends Model
         try {
 
             // sentencia sql
-            $sql = "SELECT * FROM Users WHERE name = :name"; 
+            $sql = "SELECT * FROM users WHERE name = :name"; 
 
 
             // conectamos con la base de datos
@@ -155,7 +155,7 @@ class accountModel extends Model
         try {
 
             // sentencia sql
-            $sql = "SELECT * FROM Users WHERE email = :email"; 
+            $sql = "SELECT * FROM users WHERE email = :email"; 
 
             // conectamos con la base de datos
             $fp = $this->db->connect();
@@ -203,7 +203,7 @@ class accountModel extends Model
             $password = password_hash($password, PASSWORD_DEFAULT);
 
             // sentencia sql
-            $sql = "UPDATE Users SET password = :password WHERE id = :id";
+            $sql = "UPDATE users SET password = :password WHERE id = :id";
 
             // conectamos con la base de datos
             $fp = $this->db->connect();
@@ -246,7 +246,7 @@ class accountModel extends Model
         try {
 
             // sentencia sql
-            $sql = "DELETE FROM Users WHERE id = :id";
+            $sql = "DELETE FROM users WHERE id = :id";
 
             // conectamos con la base de datos
             $fp = $this->db->connect();

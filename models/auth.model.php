@@ -182,7 +182,7 @@ class authModel extends Model {
         try {
 
             // sentencia sql
-            $sql = "SELECT * FROM Users WHERE name = :name"; 
+            $sql = "SELECT * FROM users WHERE name = :name"; 
 
 
             // conectamos con la base de datos
@@ -228,7 +228,7 @@ class authModel extends Model {
             $password_enc = password_hash($password, PASSWORD_DEFAULT);
 
             // sentencia sql
-            $sql = "INSERT INTO Users (name, email, password) 
+            $sql = "INSERT INTO users (name, email, password) 
             VALUES (:name, :email, :password)"; 
 
             // conectamos con la base de datos

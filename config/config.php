@@ -2,7 +2,7 @@
 # Configuración básica aplicación MVC
 
 # Ruta absoluta del proyecto
-define('URL', 'https://localhost/Proyecto_Fin_De_Grado/');
+define('URL', 'https://demicasaalatuya.xo.je/');
 
 
 # Constantes de configuración de la aplicación
@@ -18,10 +18,10 @@ define('DEFAULT_CONTROLLER', 'main');
 define('ERROR_CONTROLLER', 'error');
 
 # Constante de la Base de Datos
-define('HOST', 'localhost');
-define('DB', 'dmcalt');
-define('USER', 'root');
-define('PASSWORD', '');
+define('HOST', 'fsql100.infinityfree.com');
+define('DB', 'if0_40885980_dmcalt');
+define('USER', 'if0_40885980');
+define('PASSWORD', 'Clagbbaby8');
 define('CHARSET', 'utf8mb4');
 
 
