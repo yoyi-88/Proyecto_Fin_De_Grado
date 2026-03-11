@@ -4,15 +4,18 @@ class User extends Controller {
 
     function __construct() {
         parent::__construct();
-        sec_session_start();
     }
 
     function render() {
+        sec_session_start();
+
         $this->requireLogin();
         // Solo Admin puede ver esto. Asumimos que tienes una config de privilegios
         $this->requireAdmin(); 
 
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
         
         if (isset($_SESSION['mensaje'])) {
             $this->view->mensaje = $_SESSION['mensaje'];
@@ -29,10 +32,14 @@ class User extends Controller {
     }
 
     function new() {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requireAdmin();
 
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
         $this->view->user = new class_user();
 
         if (isset($_SESSION['errores'])) {
@@ -50,6 +57,8 @@ class User extends Controller {
     }
 
     public function create() {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requireAdmin();
 
@@ -66,14 +75,33 @@ class User extends Controller {
         $errores = [];
 
         // Validaciones
-        if (empty($name)) $errores['name'] = "El nombre es obligatorio.";
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errores['email'] = "Email inválido.";
-        elseif (!$this->model->validateUniqueEmail($email)) $errores['email'] = "Email ya registrado.";
-        
-        if (empty($password) || strlen($password) < 5) $errores['password'] = "La contraseña debe tener al menos 5 caracteres.";
-        
-        if (empty($role_id) || !$this->model->validateRole($role_id)) $errores['role_id'] = "Rol inválido.";
+        // Validación Nombre
+        if (empty($name)) {
+            $errores['name'] = "El nombre es obligatorio.";
+        } 
 
+       // Validación Email
+        if (empty($email)) {
+            $errores['email'] = "El email es obligatorio.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errores['email'] = "Formato de email inválido.";
+        } elseif (!$this->model->validateUniqueEmail($email)) {
+            $errores['email'] = "Email ya registrado.";
+        }
+        
+        // Validación Contraseña
+        if (empty($password) || strlen($password) < 5) {
+            $errores['password'] = "La contraseña debe tener al menos 5 caracteres.";
+        }
+        
+        // Validación Rol
+        if (empty($role_id)) {
+            $errores['role_id'] = "El rol es obligatorio.";
+        } elseif (!$this->model->validateRole($role_id)) {
+            $errores['role_id'] = "Rol inválido.";
+        }
+
+        // Si hay errores, guardarlos en sesión y redirigir de vuelta al formulario
         if (!empty($errores)) {
             $_SESSION['errores'] = $errores;
             $_SESSION['user'] = $user;
@@ -91,6 +119,8 @@ class User extends Controller {
     }
 
     public function edit($params) {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requireAdmin();
         
@@ -113,11 +143,18 @@ class User extends Controller {
     }
 
     public function update($params) {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requireAdmin();
 
         $id = (int)$params[0];
         // Validar CSRF...
+        $csrf_token = $_POST['csrf_token'] ?? '';
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            header('location:' . URL . 'error'); 
+            exit();
+        }
 
         $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
         $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
@@ -131,20 +168,38 @@ class User extends Controller {
         $cambios = false;
 
         // Comprobación de cambios y validaciones
-        if ($name != $user_db->name) { $cambios = true; if(empty($name)) $errores['name'] = "Nombre obligatorio."; }
+        // 
+        if ($name != $user_db->name) { 
+            $cambios = true; if(empty($name)) $errores['name'] = "Nombre obligatorio."; 
+        }
         
         if ($email != $user_db->email) { 
             $cambios = true; 
-            if(empty($email)) $errores['email'] = "Email obligatorio.";
-            elseif(!$this->model->validateUniqueEmail($email, $id)) $errores['email'] = "Email ya existe.";
+            if(empty($email)) {
+                $errores['email'] = "Email obligatorio.";
+            } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errores['email'] = "Formato de email inválido.";
+            } elseif(!$this->model->validateUniqueEmail($email, $id)) {
+                $errores['email'] = "Email ya existe.";
+            } 
+            
         }
 
-        if ($role_id != $user_db->role_id) { $cambios = true; }
+        if ($role_id != $user_db->role_id) { 
+            $cambios = true; 
+            if(empty($role_id)) {
+                $errores['role_id'] = "Rol obligatorio.";
+            } elseif (!$this->model->validateRole($role_id)) {
+                $errores['role_id'] = "Rol inválido.";
+            }
+        }
 
         // Si password no está vacío, significa que quiere cambiarlo
         if (!empty($password)) {
             $cambios = true;
-            if(strlen($password) < 5) $errores['password'] = "La contraseña debe tener 5+ caracteres.";
+            if(strlen($password) < 7) {
+                $errores['password'] = "La contraseña debe tener 7+ caracteres.";
+            }
             // Hashear nueva contraseña
             $user_act->password = password_hash($password, PASSWORD_DEFAULT);
         } else {
@@ -170,14 +225,23 @@ class User extends Controller {
     }
 
     public function delete($params) {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requireAdmin();
-        // Validar CSRF...
+        
         
         $id = (int)$params[0];
         if (!$this->model->validateIdUser($id)) {
             $_SESSION['error'] = "Usuario no existe.";
             header('Location: ' . URL . 'user'); exit();
+        }
+
+        // Validar CSRF...
+        $csrf_token = $_POST['csrf_token'] ?? '';
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            header('location:' . URL . 'error'); 
+            exit();
         }
 
         // Evitar que el admin se borre a sí mismo
@@ -192,6 +256,8 @@ class User extends Controller {
     }
 
     public function show($params) {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requireAdmin();
         $id = (int)$params[0];
@@ -206,6 +272,8 @@ class User extends Controller {
     }
 
     public function order($params) {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requireAdmin();
         $criterio = (int)$params[0];
@@ -215,6 +283,8 @@ class User extends Controller {
     }
 
     public function search() {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requireAdmin();
         $term = $_GET['term'] ?? '';
@@ -234,7 +304,7 @@ class User extends Controller {
         // Validación estricta: Solo rol ID 1 (Admin) pasa
         if ($_SESSION['role_id'] != 1) { 
             $_SESSION['error'] = "Acceso denegado. Área exclusiva de Administradores.";
-            header('Location: ' . URL . 'libro'); // O a home
+            header('Location: ' . URL . 'main'); // O a home
             exit();
         }
     }
