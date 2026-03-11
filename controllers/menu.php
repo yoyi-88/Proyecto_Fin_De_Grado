@@ -5,7 +5,7 @@ class Menu extends Controller
     function __construct()
     {
         parent::__construct();
-        sec_session_start();
+        
     }
 
     /*
@@ -14,6 +14,8 @@ class Menu extends Controller
     */
     function render()
     {
+        // Iniciamos o continuamos sesión
+        sec_session_start();
         // NOTA: El render lo dejo público o solo logueados según decidas. 
         // Si es público, quita requireLogin. Si no, déjalo.
         // $this->requireLogin(); 
@@ -22,7 +24,9 @@ class Menu extends Controller
 
         $this->requirePrivilege($GLOBALS['menu']['render']);
 
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
 
         // Gestión de mensajes de sesión (Feedback usuario)
         if (isset($_SESSION['mensaje'])) {
@@ -45,11 +49,15 @@ class Menu extends Controller
         Descripción: Formulario crear menú
     */
     function new() {
+        // Iniciamos o continuamos sesión
+        sec_session_start();
         // Seguridad: Solo Admin (Chef) puede crear
         $this->requireLogin();
         $this->requirePrivilege($GLOBALS['menu']['new']);
 
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
 
         // Inicializar objeto vacío
         $this->view->menu = new class_menu();
@@ -76,6 +84,9 @@ class Menu extends Controller
     */
     public function create()
     {
+        // Iniciamos o continuamos sesión
+        sec_session_start();
+
         $this->requireLogin();
         $this->requirePrivilege($GLOBALS['menu']['create']);
 
@@ -96,9 +107,21 @@ class Menu extends Controller
         // Validación
         $errores = [];
 
-        if (empty($nombre)) $errores['nombre'] = 'El nombre es obligatorio.';
-        if (empty($descripcion)) $errores['descripcion'] = 'La descripción es obligatoria.';
-        if (empty($precio) || $precio <= 0) $errores['precio'] = 'El precio debe ser positivo.';
+        if (empty($nombre)) {
+            $errores['nombre'] = 'El nombre es obligatorio.';
+        } 
+
+        if (empty($descripcion)) {
+            $errores['descripcion'] = 'La descripción es obligatoria.';
+        } 
+        
+        if (empty($precio)) {
+            $errores['precio'] = 'El precio es obligatorio.';
+        } elseif (!filter_var($precio, FILTER_VALIDATE_FLOAT)) {
+            $errores['precio'] = 'El precio debe ser un número decimal válido.';
+        } elseif ((float)$precio <= 0) {
+            $errores['precio'] = 'El precio debe ser positivo.';
+        }
 
         // Si hay errores
         if (!empty($errores)) {
@@ -122,6 +145,9 @@ class Menu extends Controller
     */
     public function delete($params)
     {
+        // Iniciamos o continuamos sesión
+        sec_session_start();
+
         $this->requireLogin();
         $this->requirePrivilege($GLOBALS['menu']['delete']);
 
