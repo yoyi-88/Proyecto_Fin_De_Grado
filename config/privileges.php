@@ -6,7 +6,7 @@
         - Render: Todos pueden ver los menús (Chef y Clientes)
         - Gestión (New/Edit/Delete): Solo el Administrador (Chef)
     */
-    $GLOBALS['menu']['render'] = [1, 2, 3];
+    // $GLOBALS['menu']['render'] = [1, 2, 3];
     $GLOBALS['menu']['new']    = [1];
     $GLOBALS['menu']['create'] = [1];
     $GLOBALS['menu']['edit']   = [1];

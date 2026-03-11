@@ -20,9 +20,9 @@ class Menu extends Controller
         // Si es público, quita requireLogin. Si no, déjalo.
         // $this->requireLogin(); 
         // Antes: $this->requireLogin(); (o nada)
-        $this->requireLogin();
+        // $this->requireLogin();
 
-        $this->requirePrivilege($GLOBALS['menu']['render']);
+        // $this->requirePrivilege($GLOBALS['menu']['render']);
 
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -168,6 +168,129 @@ class Menu extends Controller
         $this->model->delete($id);
         $_SESSION['mensaje'] = "Menú eliminado correctamente";
         header('Location: ' . URL . 'menu');
+    }
+
+    /*
+        Método: show
+        Descripción: Muestra los detalles de un menú específico (solo lectura)
+    */
+    public function show($params) {
+        $this->requireLogin();
+        $this->requirePrivilege($GLOBALS['menu']['show']);
+        
+        $id = (int) $params[0];
+        
+        // Validar que el menú existe
+        if (!$this->model->validate_id_menu_exists($id)) {
+            $_SESSION['error'] = "El menú que intentas ver no existe.";
+            header('Location: ' . URL . 'menu');
+            exit();
+        }
+
+        $this->view->title = "Detalle del Menú";
+        $this->view->menu = $this->model->read($id);
+        $this->view->render('menu/show/index');
+    }
+
+    /*
+        Método: edit
+        Descripción: Carga el formulario con los datos del menú para editarlo
+    */
+    public function edit($params) {
+        $this->requireLogin();
+        $this->requirePrivilege($GLOBALS['menu']['edit']); // Solo Chef
+        
+        $id = (int) $params[0];
+        
+        if (!$this->model->validate_id_menu_exists($id)) {
+            $_SESSION['error'] = "El menú que intentas editar no existe.";
+            header('Location: ' . URL . 'menu');
+            exit();
+        }
+
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        
+        // Cargar datos actuales
+        $this->view->id = $id;
+        $this->view->menu = $this->model->read($id);
+
+        // Comprobar si venimos rebotados por un error de validación
+        if (isset($_SESSION['errores'])) {
+            $this->view->errors = $_SESSION['errores'];
+            unset($_SESSION['errores']);
+            if (isset($_SESSION['menu'])) {
+                $this->view->menu = $_SESSION['menu']; // Sobrescribir con lo que el usuario tecleó
+                unset($_SESSION['menu']);
+            }
+            $this->view->error = "Revisa los errores del formulario.";
+        }
+
+        $this->view->title = "Editar Plato";
+        $this->view->render('menu/edit/index');
+    }
+
+    /*
+        Método: update
+        Descripción: Procesa los datos del formulario de edición y actualiza la BD
+    */
+    public function update($params) {
+        $this->requireLogin();
+        $this->requirePrivilege($GLOBALS['menu']['update']); // Solo Chef
+
+        $id = (int) $params[0];
+
+        // Validar CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            header('location:' . URL . 'error');
+            exit();
+        }
+
+        // Sanear datos
+        $nombre = filter_var($_POST['nombre'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $descripcion = filter_var($_POST['descripcion'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $precio = filter_var($_POST['precio'] ?? '', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+
+        // Crear objeto con los datos actualizados y obtener los originales de la BD
+        $menu_act = new class_menu($id, $nombre, $descripcion, $precio);
+        $menu_db = $this->model->read($id);
+
+        $errores = [];
+        $cambios = false;
+
+        // Comprobar cambios y validar
+        if ($nombre != $menu_db->nombre) {
+            $cambios = true;
+            if (empty($nombre)) $errores['nombre'] = 'El nombre es obligatorio.';
+        }
+        if ($descripcion != $menu_db->descripcion) {
+            $cambios = true;
+            if (empty($descripcion)) $errores['descripcion'] = 'La descripción es obligatoria.';
+        }
+        if ($precio != $menu_db->precio) {
+            $cambios = true;
+            if (empty($precio) || $precio <= 0) $errores['precio'] = 'El precio debe ser un número positivo.';
+        }
+
+        // Si hay errores, volver al formulario
+        if (!empty($errores)) {
+            $_SESSION['errores'] = $errores;
+            $_SESSION['menu'] = $menu_act;
+            header('Location: ' . URL . 'menu/edit/' . $id);
+            exit();
+        }
+
+        // Si no hay cambios, no hacemos query a la BD
+        if (!$cambios) {
+            $_SESSION['mensaje'] = "No se han realizado cambios.";
+            header('Location: ' . URL . 'menu');
+            exit();
+        }
+
+        // Ejecutar actualización
+        $this->model->update($menu_act);
+        $_SESSION['mensaje'] = "Menú actualizado correctamente.";
+        header('Location: ' . URL . 'menu');
+        exit();
     }
 
     // Helpers de seguridad (Copiados de tu estructura Auth)

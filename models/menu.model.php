@@ -20,6 +20,24 @@ class menuModel extends Model {
     }
 
     /*
+        Método: read(int $id)
+        Descripción: Obtiene los detalles de un menú para mostrar o editar
+    */
+    public function read(int $id) {
+        try {
+            $sql = "SELECT id, nombre, descripcion, precio FROM menus WHERE id = :id LIMIT 1";
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            // IMPORTANTE: Lo devolvemos como objeto de la clase class_menu
+            $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'class_menu');
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            $this->handleError($e);
+        }
+    }
+    /*
         Método: create($menu)
     */
     public function create($menu) {
@@ -37,6 +55,29 @@ class menuModel extends Model {
             $stmt->execute();
             return $conn->lastInsertId();
 
+        } catch (PDOException $e) {
+            $this->handleError($e);
+        }
+    }
+
+    /*
+        Método: update($menu)
+        Descripción: Actualiza los datos de un menú existente
+    */
+    public function update($menu) {
+        try {
+            $sql = "UPDATE menus 
+                    SET nombre = :nombre, descripcion = :descripcion, precio = :precio, update_at = CURRENT_TIMESTAMP 
+                    WHERE id = :id";
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+
+            $stmt->bindParam(':nombre', $menu->nombre, PDO::PARAM_STR, 100);
+            $stmt->bindParam(':descripcion', $menu->descripcion, PDO::PARAM_STR);
+            $stmt->bindParam(':precio', $menu->precio, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $menu->id, PDO::PARAM_INT);
+
+            return $stmt->execute();
         } catch (PDOException $e) {
             $this->handleError($e);
         }
