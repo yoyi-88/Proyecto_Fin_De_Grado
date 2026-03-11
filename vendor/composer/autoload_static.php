@@ -11,12 +11,20 @@ class ComposerStaticInit4be8f0ef71fb24c08f03a5b32cfe6123
         array (
             'Terminal04\\ProyectoFinDeGrado\\' => 30,
         ),
+        'P' =>
+        array (
+            'PHPMailer\\PHPMailer\\' => 20,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
         'Terminal04\\ProyectoFinDeGrado\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
+        ),
+        'PHPMailer\\PHPMailer\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
     );
 

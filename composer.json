@@ -11,5 +11,7 @@
             "email": "ygomben2510@g.educaand.es"
         }
     ],
-    "require": {}
+    "require": {
+        "phpmailer/phpmailer": "^7.0"
+    }
 }
