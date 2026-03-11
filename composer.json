@@ -1,0 +1,15 @@
+{
+    "name": "terminal04/proyecto_fin_de_grado",
+    "autoload": {
+        "psr-4": {
+            "Terminal04\\ProyectoFinDeGrado\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "yoyi-88",
+            "email": "ygomben2510@g.educaand.es"
+        }
+    ],
+    "require": {}
+}
