@@ -28,6 +28,10 @@
           <?php endif; ?>
           
         <?php endif; ?>
+
+        <li class="nav-item">
+           <a class="nav-link active" href="<?= URL ?>contact">Contacto</a>
+        </li>
       </ul>
 
       <div class="d-flex">
