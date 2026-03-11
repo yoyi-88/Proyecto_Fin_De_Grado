@@ -154,19 +154,32 @@ class userModel extends Model {
     */
     public function delete($id) {
         try {
-            // Eliminar de roles_users primero (si no hay CASCADE en la DB)
-            $sql_roles = "DELETE FROM roles_users WHERE user_id = :id";
             $conn = $this->db->connect();
-            $stmt = $conn->prepare($sql_roles);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
+            
+            // Iniciamos transacción
+            $conn->beginTransaction();
+
+            // Eliminar de roles_users primero
+            $sql_roles = "DELETE FROM roles_users WHERE user_id = :id";
+            $stmt_roles = $conn->prepare($sql_roles);
+            $stmt_roles->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt_roles->execute();
 
             // Eliminar usuario
-            $sql = "DELETE FROM users WHERE id = :id";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            return $stmt->execute();
+            $sql_users = "DELETE FROM users WHERE id = :id";
+            $stmt_users = $conn->prepare($sql_users);
+            $stmt_users->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt_users->execute();
+            
+            // Confirmamos cambios
+            $conn->commit();
+            return true;
+
         } catch (PDOException $e) {
+            // Si algo falla cancelamos los cambios
+            if (isset($conn) && $conn->inTransaction()) {
+                $conn->rollBack();
+            }
             $this->handleError($e);
         }
     }
