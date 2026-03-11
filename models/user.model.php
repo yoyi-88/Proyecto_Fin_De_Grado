@@ -55,22 +55,31 @@ class userModel extends Model {
         try {
             $conn = $this->db->connect();
             
-            // 1. Insertar en tabla users
+            // Iniciamos transacción
+            $conn->beginTransaction(); 
+
             $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':name', $user->name, PDO::PARAM_STR, 50);
             $stmt->bindParam(':email', $user->email, PDO::PARAM_STR, 50);
-            $stmt->bindParam(':password', $user->password, PDO::PARAM_STR, 60); // Hash
+            $stmt->bindParam(':password', $user->password, PDO::PARAM_STR, 60);
             $stmt->execute();
 
             $user_id = $conn->lastInsertId();
 
-            // 2. Asignar rol (Tabla pivote)
-            $this->assign_role($user_id, $user->role_id);
+            // Asignar rol pasándole la MISMA conexión
+            $this->assign_role($user_id, $user->role_id, $conn);
+
+            // Si todo correcto, confirmamos cambios
+            $conn->commit();
 
             return $user_id;
 
         } catch (PDOException $e) {
+            // Si algo falla, revertimos cambios
+            if (isset($conn)) {
+                $conn->rollBack();
+            }
             $this->handleError($e);
         }
     }
@@ -106,9 +115,10 @@ class userModel extends Model {
     public function update($user) {
         try {
             $conn = $this->db->connect();
+            
+            // Iniciamos transacción
+            $conn->beginTransaction();
 
-            // 1. Actualizar datos básicos
-            // Si el password viene lleno, actualizamos todo, si no, solo nombre y email
             if (!empty($user->password)) {
                 $sql = "UPDATE users SET name = :name, email = :email, password = :password, update_at = CURRENT_TIMESTAMP WHERE id = :id";
                 $stmt = $conn->prepare($sql);
@@ -123,11 +133,18 @@ class userModel extends Model {
             $stmt->bindParam(':id', $user->id, PDO::PARAM_INT);
             $stmt->execute();
 
-            // 2. Actualizar Rol (Eliminar anterior y poner nuevo para garantizar solo 1 perfil)
-            $this->assign_role($user->id, $user->role_id);
+            // Pasamos la conexión a assign_role
+            $this->assign_role($user->id, $user->role_id, $conn);
 
+            // Si todo correcto, confirmamos cambios
+            $conn->commit();
             return true;
+            
         } catch (PDOException $e) {
+            // Si algo falla, revertimos cambios
+            if (isset($conn)) {
+                $conn->rollBack();
+            }
             $this->handleError($e);
         }
     }
@@ -156,17 +173,16 @@ class userModel extends Model {
 
     /*
         Método: assign_role
-        Helper para gestionar la tabla pivote roles_users
+        Asigna un rol a un usuario. Primero borra cualquier rol asignado, luego inserta el nuevo (si no es null).
+         Recibe la conexión como parámetro para asegurar que ambas operaciones (borrar e insertar) formen parte de la misma transacción.
     */
-    private function assign_role($user_id, $role_id) {
-        $conn = $this->db->connect();
-        // Borrar roles previos (regla de negocio: solo 1 perfil)
+    private function assign_role($user_id, $role_id, $conn) {
+        
         $sql_del = "DELETE FROM roles_users WHERE user_id = :user_id";
         $stmt_del = $conn->prepare($sql_del);
         $stmt_del->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $stmt_del->execute();
 
-        // Insertar nuevo
         if ($role_id) {
             $sql_in = "INSERT INTO roles_users (user_id, role_id) VALUES (:user_id, :role_id)";
             $stmt_in = $conn->prepare($sql_in);
@@ -178,34 +194,52 @@ class userModel extends Model {
 
     // Validaciones
     public function validateUniqueEmail($email, $user_id = null) {
-        $sql = "SELECT id FROM users WHERE email = :email";
-        if ($user_id) {
-            $sql .= " AND id != :id";
+        try {
+            $sql = "SELECT id FROM users WHERE email = :email";
+            if ($user_id) {
+                $sql .= " AND id != :id";
+            }
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            if ($user_id) $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() == 0;
+        } catch (PDOException $e) {
+            $this->handleError($e);
+            return false; // En caso de error, consideramos el email como no único para evitar duplicados
         }
-        $conn = $this->db->connect();
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-        if ($user_id) $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->rowCount() == 0;
+        
     }
 
     public function validateRole($role_id) {
-        $sql = "SELECT id FROM roles WHERE id = :id";
-        $conn = $this->db->connect();
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $role_id, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
+        try {
+            $sql = "SELECT id FROM roles WHERE id = :id";
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':id', $role_id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->handleError($e);
+            return false; // En caso de error, consideramos el rol como inválido
+        }
+        
     }
 
     public function validateIdUser($id) {
-        $sql = "SELECT id FROM users WHERE id = :id";
-        $conn = $this->db->connect();
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
+        try {
+            $sql = "SELECT id FROM users WHERE id = :id";
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->handleError($e);
+            return false; // En caso de error, consideramos el ID como inválido
+        }
+        
     }
     
     // Métodos order() y search() siguen la misma lógica que en Libros pero con campos de usuario
