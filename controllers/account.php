@@ -212,6 +212,11 @@ class Account extends Controller
         // Actualizo los datos del usuario
         $this->model->update($name, $email, $_SESSION['user_id']);
 
+        // Email por edifción de perfil
+        $asunto = "Modificación de perfil en De Mi Casa a la Tuya";
+        $cuerpo_mensaje = "¡Hola $name!\n\nTe informamos que los datos de tu perfil han sido modificados correctamente.\nSi no has sido tú, ponte en contacto con nosotros inmediatamente.\n\nUn saludo.";
+        $this->enviarEmail($name, $email, $asunto, $cuerpo_mensaje);
+
         // Actualizo el posible nuevo nombre del usuario
         $_SESSION['user_name'] = $name;
 
@@ -346,6 +351,13 @@ class Account extends Controller
         // Actualizo password del usuario
         $this->model->updatePass($new_password, $_SESSION['user_id']);
 
+        // Email por cambio de password
+        $nombre_usuario = $_SESSION['user_name'];
+        $email_usuario = $account->email; // Lo sacamos del objeto $account que obtuviste arriba
+        $asunto = "Cambio de contraseña en De Mi Casa a la Tuya";
+        $cuerpo_mensaje = "¡Hola $nombre_usuario!\n\nTu contraseña ha sido actualizada correctamente.\nTu nueva contraseña es: $new_password\n\nUn saludo.";
+        $this->enviarEmail($nombre_usuario, $email_usuario, $asunto, $cuerpo_mensaje);
+
         // Genero mensaje de éxito
         $_SESSION['mensaje'] = 'Password actualizado correctamente';
 
@@ -402,6 +414,16 @@ class Account extends Controller
             $this->handleError();
         }
 
+        // Email por eliminación de cuenta
+        $nombre_usuario = $_SESSION['user_name'];
+        // Obtenemos el email antes de borrar el usuario usando el modelo
+        $usuario_a_borrar = $this->model->getUserId($_SESSION['user_id']);
+        $email_usuario = $usuario_a_borrar->email;
+        
+        $asunto = "Baja de perfil en De Mi Casa a la Tuya";
+        $cuerpo_mensaje = "¡Hola $nombre_usuario!\n\nTe confirmamos que tu perfil ha sido eliminado exitosamente de nuestra plataforma. Sentimos verte marchar.\n\nUn saludo,\nEl equipo de De Mi Casa a la Tuya.";
+        $this->enviarEmail($nombre_usuario, $email_usuario, $asunto, $cuerpo_mensaje);
+
         // Elimino el usuario
         $this->model->delete($_SESSION['user_id']);
 
@@ -432,6 +454,40 @@ class Account extends Controller
             $_SESSION['mensaje'] = "Debes iniciar sesión para acceder al sistema";
             header('Location: ' . URL . 'auth/login');
             exit();
+        }
+    }
+
+    /*
+        Envía un email desde el sistema al usuario
+    */
+    function enviarEmail($name, $email, $subject, $message)
+    {
+        require_once 'config/smtp_gmail.php';
+        require_once 'vendor/autoload.php';
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+
+        try {
+            $mail->CharSet = "UTF-8";
+            $mail->Encoding = "quoted-printable";
+            $mail->isSMTP();
+            $mail->Host = SMTP_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = SMTP_USER;
+            $mail->Password = SMTP_PASS;
+            $mail->Port = SMTP_PORT;
+            $mail->SMTPSecure = 'tls';
+
+            // Configurar el email: Remitente (Sistema) -> Destinatario (Usuario)
+            $mail->setFrom(SMTP_USER, 'Administración De Mi Casa a la Tuya');
+            $mail->addAddress($email, $name);
+            $mail->Subject = $subject;
+            $mail->Body = $message;
+
+            $mail->send();
+        } catch (Exception $e) {
+            $mensaje_error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            $this->handleError($mensaje_error); // Reutilizamos tu manejador de errores
         }
     }
 

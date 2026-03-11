@@ -28,8 +28,10 @@ class Auth extends Controller
         // iniciar o continuar sesión
         sec_session_start();
 
-        // Crear un token CSRF para los formularios
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        // Crear un token CSRF solo si no existe
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
         
 
         // Inicializo los campos del formulario
@@ -74,7 +76,7 @@ class Auth extends Controller
             Descripción: Recibe los datos de autenticación para validarla: emial, pass
                 - Validar usuario mediante email y pass
                 - En caso de error de valiación. Restroalimenta el formulario y muestra errores
-                - En caso de validación. Inicia sesión segura y redirecciona a la página main
+                - En caso de validación. Inicia sesión segura y redirecciona a la página de De Mi Casa a la Tuya
 
             url asociada: auth/validate_login
 
@@ -164,7 +166,7 @@ class Auth extends Controller
         session_regenerate_id(true);
 
         // - Almaceno los datos del usuario en la sesión
-        // - Redirecciono al main de la aplicación
+        // - Redirecciono al panel de control de De Mi Casa a la Tuyas
 
         // Almaceno los datos del usuario en la sesión
         $_SESSION['user_id'] = $user->id;
@@ -196,8 +198,10 @@ class Auth extends Controller
         // inicio o continuo la sesión
         sec_session_start();
 
-        // Creo un token CSRF
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        // Crear un token CSRF solo si no existe
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
                 
         // Inicializo los campos del formulario
         $this->view->name = null;
@@ -221,7 +225,7 @@ class Auth extends Controller
             // Elimino la variable de sesión errors
             unset($_SESSION['errors']);
 
-            // Elimino la variable de sesión libro
+            // Elimino la variable de sesión De Mi Casa a la Tuya
             unset($_SESSION['name']);
             unset($_SESSION['email']);
             unset($_SESSION['password']);
@@ -279,7 +283,7 @@ class Auth extends Controller
         // longitud máxima 20 caracteres, clave secundaria
         if (empty($name)) {
             $errors['name'] = 'El nombre es obligatorio';
-        } else if ((strlen($name) < 5) and (strlen($name) > 20)) {
+        } else if ((strlen($name) < 5) || (strlen($name) > 20)) {
             $errors['name'] = 'La longitud del nombre debe estar entre 5 y 20 caracteres';
         } else if ($this->model->validate_exists_name($name)) {
             $errors['name'] = 'Name ya ha sido registrado';
@@ -335,6 +339,18 @@ class Auth extends Controller
         // 3 es el id del rol de usuario registrado
         $id = $this->model->create($name, $email, $password);
 
+        // Email de registro
+        $asunto = "Bienvenido a De Mi Casa a la Tuya";
+        $cuerpo_mensaje = "¡Hola $name!\n\n";
+        $cuerpo_mensaje .= "Bienvenido a nuestra plataforma. Tu registro se ha completado con éxito.\n\n";
+        $cuerpo_mensaje .= "Aquí tienes tus datos de registro:\n";
+        $cuerpo_mensaje .= "- Nombre: $name\n";
+        $cuerpo_mensaje .= "- Usuario (email): $email\n";
+        $cuerpo_mensaje .= "- Password: $password\n\n";
+        $cuerpo_mensaje .= "¡Esperamos que disfrutes de nuestros servicios!\n\nUn saludo,\nEl equipo de Administración.";
+        
+        $this->enviarEmail($name, $email, $asunto, $cuerpo_mensaje);
+
         // Genero mensaje de éxito
         $_SESSION['mensaje'] = 'Usuario registrado correctamente';
 
@@ -359,6 +375,39 @@ class Auth extends Controller
         exit();
     }
     
+    /*
+        Envía un email desde el sistema al usuario
+    */
+    function enviarEmail($name, $email, $subject, $message)
+    {
+        require_once 'config/smtp_gmail.php';
+        require_once 'vendor/autoload.php';
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+
+        try {
+            $mail->CharSet = "UTF-8";
+            $mail->Encoding = "quoted-printable";
+            $mail->isSMTP();
+            $mail->Host = SMTP_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = SMTP_USER;
+            $mail->Password = SMTP_PASS;
+            $mail->Port = SMTP_PORT;
+            $mail->SMTPSecure = 'tls';
+
+            // Configurar el email: Remitente (Sistema) -> Destinatario (Usuario)
+            $mail->setFrom(SMTP_USER, 'Administración De Mi Casa a la Tuya');
+            $mail->addAddress($email, $name);
+            $mail->Subject = $subject;
+            $mail->Body = $message;
+
+            $mail->send();
+        } catch (Exception $e) {
+            $mensaje_error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            $this->handleError($mensaje_error); // Reutilizamos tu manejador de errores
+        }
+    }
 
 
     private function handleError()
