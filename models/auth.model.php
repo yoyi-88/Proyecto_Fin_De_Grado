@@ -3,9 +3,10 @@
     Modelo:  auth.model.php
     Descripción: Modelo para gestionar los datos del controlador auth
 */
-   
 
-class authModel extends Model {
+
+class authModel extends Model
+{
 
     /*
         Método: get_user_emial($email)
@@ -20,26 +21,27 @@ class authModel extends Model {
                 - password
             - False. Si el email no corresponde a nigún usuario
     */
-    public function get_user_email($email) {
+    public function get_user_email($email)
+    {
         try {
-        // Generamos select 
-        $sql = "SELECT id, name, email, password FROM users WHERE email = :email LIMIT 1";
-        // Conectar con la base de datos
-        $dmcalt = $this->db->connect();
-        // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $dmcalt->prepare($sql);
-        // Tipo fetch
-         $stmt->setFetchMode(PDO::FETCH_OBJ);
-        // Vincular los parámetros
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
-        // Ejecutamos sql
-        $stmt->execute();
-        // Devolvemos el objeto o falso
-        return $stmt->fetch();
-        
+            // Generamos select 
+            $sql = "SELECT id, name, email, password FROM users WHERE email = :email LIMIT 1";
+            // Conectar con la base de datos
+            $dmcalt = $this->db->connect();
+            // Preparar la consulta obteniendo el objeto PDOStatement
+            $stmt = $dmcalt->prepare($sql);
+            // Tipo fetch
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            // Vincular los parámetros
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
+            // Ejecutamos sql
+            $stmt->execute();
+            // Devolvemos el objeto o falso
+            return $stmt->fetch();
+
         } catch (PDOException $e) {
             // Manejo del error
-            $this->handleError($e); 
+            $this->handleError($e);
 
         }
     }
@@ -61,7 +63,7 @@ class authModel extends Model {
         try {
 
             // sentencia sql
-            $sql = "SELECT role_id FROM roles_users WHERE user_id = :user_id LIMIT 1"; 
+            $sql = "SELECT role_id FROM roles_users WHERE user_id = :user_id LIMIT 1";
 
             // conectamos con la base de datos
             $dmcalt = $this->db->connect();
@@ -83,22 +85,22 @@ class authModel extends Model {
 
         } catch (PDOException $e) {
 
-            $this->handleError($e); 
+            $this->handleError($e);
 
         }
     }
 
-/*
-        Método: get_name_role_user($role_id)
-        Descripción: obtiene el nombre del perfil de un usuario
-        @param: 
-            - $role_id: id del rol
-        Devuelve:
-            - nombre del rol del usuario
-        Observaciones:
-            - Sólo va a devolver el primer rol asignado en la tabla roles_users por simplicidad
+    /*
+            Método: get_name_role_user($role_id)
+            Descripción: obtiene el nombre del perfil de un usuario
+            @param: 
+                - $role_id: id del rol
+            Devuelve:
+                - nombre del rol del usuario
+            Observaciones:
+                - Sólo va a devolver el primer rol asignado en la tabla roles_users por simplicidad
 
-    */
+        */
 
     public function get_name_role_user(int $role_id)
     {
@@ -106,7 +108,7 @@ class authModel extends Model {
         try {
 
             // sentencia sql
-            $sql = "SELECT name FROM roles WHERE id = :role_id LIMIT 1"; 
+            $sql = "SELECT name FROM roles WHERE id = :role_id LIMIT 1";
 
             // conectamos con la base de datos
             $dmcalt = $this->db->connect();
@@ -128,7 +130,7 @@ class authModel extends Model {
 
         } catch (PDOException $e) {
 
-            $this->handleError($e); 
+            $this->handleError($e);
 
         }
     }
@@ -142,29 +144,30 @@ class authModel extends Model {
             - Verdadero - email existente
             - Falso - si no existe
     */
-    public function validate_exists_email($email) {
+    public function validate_exists_email($email)
+    {
         try {
-        // Generamos select 
-        $sql = "SELECT email FROM users WHERE email = :email";
-        // Conectar con la base de datos
-        $dmcalt = $this->db->connect();
-        // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $dmcalt->prepare($sql);
-        // Vincular los parámetros
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
-        // Ejecutamos sql
-        $stmt->execute();
+            // Generamos select 
+            $sql = "SELECT email FROM users WHERE email = :email";
+            // Conectar con la base de datos
+            $dmcalt = $this->db->connect();
+            // Preparar la consulta obteniendo el objeto PDOStatement
+            $stmt = $dmcalt->prepare($sql);
+            // Vincular los parámetros
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
+            // Ejecutamos sql
+            $stmt->execute();
 
-        // Validamos
-        if ($stmt->rowCount() > 0) {
-            return TRUE;
-        }
+            // Validamos
+            if ($stmt->rowCount() > 0) {
+                return TRUE;
+            }
 
-        return FALSE;   
+            return FALSE;
 
         } catch (PDOException $e) {
             // Manejo del error
-            $this->handleError($e); 
+            $this->handleError($e);
 
         }
     }
@@ -178,11 +181,12 @@ class authModel extends Model {
             - Verdadero - name existente
             - Falso - si no existe
     */
-    public function validate_exists_name($name){
+    public function validate_exists_name($name)
+    {
         try {
 
             // sentencia sql
-            $sql = "SELECT * FROM users WHERE name = :name"; 
+            $sql = "SELECT * FROM users WHERE name = :name";
 
 
             // conectamos con la base de datos
@@ -199,14 +203,14 @@ class authModel extends Model {
 
             if ($stmt->rowCount() > 0) {
                 return TRUE;
-            } 
+            }
 
             return FALSE;
 
         } catch (PDOException $e) {
 
             // Manejo del error
-            $this->handleError($e); 
+            $this->handleError($e);
         }
     }
 
@@ -220,92 +224,66 @@ class authModel extends Model {
     {
 
         try {
-
-            // Iniciamos transacción
-            
-
-            // encriptamos la contraseña
+            // Preparación previa (fuera de la transacción)
             $password_enc = password_hash($password, PASSWORD_DEFAULT);
+            $role_id = 3; // Rol por defecto
 
-            // sentencia sql
-            $sql = "INSERT INTO users (name, email, password) 
-            VALUES (:name, :email, :password)"; 
+            // Conectar e iniciar transacción
+            $db = $this->db->connect();
+            $db->beginTransaction();
 
-            // conectamos con la base de datos
-            $dmcalt = $this->db->connect();
-
-            // iniciamos transacción
-            $dmcalt->beginTransaction();
-
-            // ejecuto prepare
-            $stmt = $dmcalt->prepare($sql);
-
-            // vinculamos parámetros
+            // Primera inserción: Usuario
+            $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)";
+            $stmt = $db->prepare($sql);
             $stmt->bindParam(':name', $name, PDO::PARAM_STR, 50);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
             $stmt->bindParam(':password', $password_enc, PDO::PARAM_STR, 255);
-
-            // ejecutamos e insertamos el usuario en la tabla users
             $stmt->execute();
 
-            // obtengo id del usuario que se acaba de registrar
-            $ultimo_id = $dmcalt->lastInsertId();
+            // Obtener el ID generado
+            $ultimo_id = $db->lastInsertId();
 
-            // Proceso 2: Añadir el rol de usuario registrado (id = 3) en la tabla roles_users
-            // sentencia sql
-            $sql = "INSERT INTO roles_users (user_id, role_id) 
-            VALUES (:user_id, :role_id)"; 
-
-            // ejecuto prepare
-            $stmt = $dmcalt->prepare($sql);
-
-            // rol usuario registrado (id = 3)
-            $role_id = 3;
-
-            // vinculamos parámetros
+            // Segunda inserción: Rol (reutilizamos $sql o usamos una nueva)
+            $sql = "INSERT INTO roles_users (user_id, role_id) VALUES (:user_id, :role_id)";
+            $stmt = $db->prepare($sql);
             $stmt->bindParam(':user_id', $ultimo_id, PDO::PARAM_INT);
             $stmt->bindParam(':role_id', $role_id, PDO::PARAM_INT);
-
-            // ejecutamos
             $stmt->execute();
 
-            // confirmamos transacción
-            $dmcalt->commit();
+            // Confirmar todo
+            $db->commit();
 
-            // Devolvermos el último id del usuario registrado
             return $ultimo_id;
 
-
         } catch (PDOException $e) {
-
-            // Deshago la transacción
-            $dmcalt->rollBack();
-
-            // Manejo del error
-            $this->handleError($e); 
-            
+            // SEGURIDAD: Solo hacemos rollback si la conexión se llegó a crear
+            if (isset($db) && $db->inTransaction()) {
+                $db->rollBack();
+            }
+            $this->handleError($e);
         }
     }
 
 
-    public function handleError(PDOException $e) {
+    public function handleError(PDOException $e)
+    {
         // Incluir y cargar el controlador de errores
         $errorControllerFile = CONTROLLER_PATH . ERROR_CONTROLLER . '.php';
-        
+
         if (file_exists($errorControllerFile)) {
             require_once $errorControllerFile;
             $mensaje = $e->getMessage() . " en la línea " . $e->getLine() . " del archivo " . $e->getFile();
             $controller = new Errores('DE BASE DE DATOS', 'Mensaje de Error: ', $mensaje);
-            
+
         } else {
             // Fallback en caso de que el controlador de errores no exista
             echo "Error crítico: " . $e->getMessage();
             exit();
         }
     }
-    
 
 
-   }
+
+}
 
 ?>
