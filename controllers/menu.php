@@ -175,6 +175,9 @@ class Menu extends Controller
         Descripción: Muestra los detalles de un menú específico (solo lectura)
     */
     public function show($params) {
+        // Iniciamos o continuamos sesión
+        sec_session_start();
+
         $this->requireLogin();
         $this->requirePrivilege($GLOBALS['menu']['show']);
         
@@ -197,6 +200,9 @@ class Menu extends Controller
         Descripción: Carga el formulario con los datos del menú para editarlo
     */
     public function edit($params) {
+        // Iniciamos o continuamos sesión
+        sec_session_start();
+
         $this->requireLogin();
         $this->requirePrivilege($GLOBALS['menu']['edit']); // Solo Chef
         
@@ -234,6 +240,9 @@ class Menu extends Controller
         Descripción: Procesa los datos del formulario de edición y actualiza la BD
     */
     public function update($params) {
+        // Iniciamos o continuamos sesión
+        sec_session_start();
+        
         $this->requireLogin();
         $this->requirePrivilege($GLOBALS['menu']['update']); // Solo Chef
 

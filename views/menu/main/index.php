@@ -33,6 +33,8 @@
                         <div class="card-footer bg-white border-0 d-flex justify-content-between pb-3">
                             <a href="<?= URL ?>menu/edit/<?= $menu->id ?>" class="btn btn-sm btn-outline-secondary">Editar</a>
 
+                            <a href="<?= URL ?>menu/show/<?= $menu->id ?>" class="btn btn-sm btn-outline-primary">Mostrar</a>
+
                             <form action="<?= URL ?>menu/delete/<?= $menu->id ?>" method="POST" onsubmit="return confirm('¿Eliminar este menú permanentemente?');">
                                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Borrar</button>
