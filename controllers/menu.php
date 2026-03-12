@@ -178,7 +178,7 @@ class Menu extends Controller
         // Iniciamos o continuamos sesión
         sec_session_start();
 
-        // No incluimos requireLogin ni requirePrivilege, ya que queremos  que sea 
+        // No incluimos requireLogin ni requirePrivilege, ya que queremos que mostrar sea 
         // visible incluso para los usuarios no registrados
         
         $id = (int) $params[0];
