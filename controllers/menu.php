@@ -302,6 +302,53 @@ class Menu extends Controller
         exit();
     }
 
+    /*
+        Método Privado: procesarImagen
+        Descripción: Valida y mueve la imagen subida al servidor.
+        Devuelve: El nombre del archivo o un array con errores.
+    */
+    private function procesarImagen($file) {
+        // Si no se subió ningún archivo, devolvemos el valor por defecto
+        if ($file['error'] == 4) {
+            return 'default.jpg';
+        }
+
+        $errores = [];
+        $nombreArchivo = $file['name'];
+        $tipoArchivo = $file['type'];
+        $tamanoArchivo = $file['size'];
+        $rutaTemporal = $file['tmp_name'];
+
+        // Validar Tamaño (Máximo 10MB)
+        $max_size = 10 * 1024 * 1024; 
+        if ($tamanoArchivo > $max_size) {
+            $errores['imagen'] = "La imagen supera el límite de 10MB.";
+        }
+
+        // Validar Tipo (Solo imágenes)
+        $tiposPermitidos = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!in_array($tipoArchivo, $tiposPermitidos)) {
+            $errores['imagen'] = "Solo se permiten formatos JPG, PNG o WEBP.";
+        }
+
+        // Si hay errores, devolvemos el array de errores
+        if (!empty($errores)) {
+            return $errores;
+        }
+
+        // 3. Generar un nombre único seguro (evita sobreescribir archivos)
+        $extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);
+        $nombreUnico = uniqid('menu_') . '.' . $extension;
+        $rutaDestino = 'public/img/menus/' . $nombreUnico;
+
+        // 4. Mover el archivo
+        if (move_uploaded_file($rutaTemporal, $rutaDestino)) {
+            return $nombreUnico;
+        } else {
+            return ['imagen' => 'Error al guardar la imagen en el servidor.'];
+        }
+    }
+
     // Helpers de seguridad (Copiados de tu estructura Auth)
     private function requirePrivilege($allowedRoles)
     {
