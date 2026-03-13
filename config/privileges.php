@@ -25,6 +25,12 @@
             - Chef (1): Por si quiere agendar manualmente por teléfono.
         Edit/Update (Cambiar estado): 
             - Solo Chef (1).
+        Show (Detalle de la cita):
+            - Chef (1): Para gestionar.
+            - Cliente (3): Para ver su reserva.
+        Read (Listar citas):
+            - Chef (1): Para gestionar.
+            - Cliente (3): Para ver sus reservas.
     */
     $GLOBALS['citas']['render'] = [1, 2, 3];
     $GLOBALS['citas']['new']    = [1, 3];
@@ -32,6 +38,6 @@
     $GLOBALS['citas']['edit']   = [1]; 
     $GLOBALS['citas']['update'] = [1];
     $GLOBALS['citas']['show']   = [1, 3]; // Ver detalle de una cita
-    $GLOBALS['citas']['read']   = [1, 2, 3]; 
+    $GLOBALS['citas']['read']   = [1, 3]; 
 
 ?>
