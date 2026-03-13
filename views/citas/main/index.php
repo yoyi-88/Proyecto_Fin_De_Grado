@@ -53,11 +53,21 @@
                         </td>
                         
                         <td class="text-end pe-4">
-                            <?php if($_SESSION['role_id'] == 1): ?>
-                                <a href="<?= URL ?>citas/edit/<?= $cita->id ?>" class="btn btn-sm btn-outline-dark">Gestionar</a>
-                            <?php else: ?>
-                                <small class="text-muted">#<?= $cita->id ?></small>
-                            <?php endif; ?>
+                            <div class="d-flex justify-content-end gap-2 align-items-center">
+                                
+                                <?php if($_SESSION['role_id'] == 1): ?>
+                                    <a href="<?= URL ?>citas/edit/<?= $cita->id ?>" class="btn btn-sm btn-outline-dark">Gestionar</a>
+                                <?php else: ?>
+                                    <small class="text-muted">#<?= $cita->id ?></small>
+                                <?php endif; ?>
+
+                                <?php if($cita->estado === 'Finalizada'): ?>
+                                    <a href="<?= URL ?>citas/factura/<?= $cita->id ?>" target="_blank" class="btn btn-sm btn-danger" title="Descargar Factura">
+                                        <i class="bi bi-file-earmark-pdf"></i> PDF
+                                    </a>
+                                <?php endif; ?>
+
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>

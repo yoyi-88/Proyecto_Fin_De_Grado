@@ -294,6 +294,89 @@ class Citas extends Controller
         }
     }
 
+    public function factura($params)
+    {
+        sec_session_start();
+
+        // Capa Login (Requisito de tu proyecto)
+        $this->requireLogin();
+
+        // Validamos que tenga permisos (ajusta el nombre del privilegio si es necesario)
+        $this->requirePrivilege($GLOBALS['citas']['read']); 
+
+        $id = (int)$params[0];
+
+        // Obtener los datos del modelo (una sola cita)
+        $cita = $this->model->read($id);
+
+        // Verificación de seguridad
+        if (!$cita || $cita->estado !== 'Finalizada') {
+            $_SESSION['error'] = "La factura solo está disponible para reservas finalizadas.";
+            header('Location: ' . URL . 'citas');
+            exit();
+        }
+
+        // Requerir la nueva clase PDF que vamos a crear
+        require_once 'class/pdf_factura.class.php';
+
+        // Instanciar y configurar PDF
+        $pdf = new pdf_factura();
+        $pdf->AliasNbPages(); // Necesario para que el {nb} del Footer calcule el total
+        
+        // Añadir la primera página
+        $pdf->AddPage();
+
+        // Imprimir el título y los datos del cliente/empresa pasándole el objeto cita
+        $pdf->titulo($cita);
+
+        // Configurar fuente para los datos
+        $pdf->SetFont('Arial', '', 11); 
+
+        // Usamos mb_substr para cortar correctamente en UTF-8 sin romper tildes
+        $cliente = mb_substr($cita->cliente_nombre, 0, 40, 'UTF-8');
+        $menu = mb_substr($cita->menu_nombre, 0, 50, 'UTF-8');
+        
+        // Cálculos del IVA
+        $precio_total = (float)$cita->menu_precio;
+        $base_imponible = $precio_total / 1.10;
+        $cuota_iva = $precio_total - $base_imponible;
+
+        // Fila de encabezado de la tabla
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->SetFillColor(230, 230, 230);
+        $pdf->Cell(120, 10, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Concepto'), 1, 0, 'L', true);
+        $pdf->Cell(35, 10, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Base Imponible'), 1, 0, 'C', true);
+        $pdf->Cell(35, 10, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Importe Total'), 1, 1, 'C', true);
+
+        // Fila de datos (El Menú)
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->Cell(120, 10, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Menú: ' . $menu), 1, 0, 'L');
+        $pdf->Cell(35, 10, number_format($base_imponible, 2, ',', '.') . ' ' . chr(128), 1, 0, 'C');
+        $pdf->Cell(35, 10, number_format($precio_total, 2, ',', '.') . ' ' . chr(128), 1, 1, 'C');
+
+        $pdf->Ln(10);
+
+        // Totales alineados a la derecha
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->Cell(120, 8, '', 0, 0); // Celda invisible para empujar el texto
+        $pdf->Cell(35, 8, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Base Imponible:'), 0, 0, 'R');
+        $pdf->Cell(35, 8, number_format($base_imponible, 2, ',', '.') . ' ' . chr(128), 0, 1, 'R');
+
+        $pdf->Cell(120, 8, '', 0, 0);
+        $pdf->Cell(35, 8, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'IVA (10%):'), 0, 0, 'R');
+        $pdf->Cell(35, 8, number_format($cuota_iva, 2, ',', '.') . ' ' . chr(128), 0, 1, 'R');
+
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->Cell(120, 10, '', 0, 0);
+        $pdf->Cell(35, 10, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'TOTAL:'), 0, 0, 'R');
+        $pdf->Cell(35, 10, number_format($precio_total, 2, ',', '.') . ' ' . chr(128), 0, 1, 'R');
+
+        // Generar y mostrar el PDF en el navegador ('I' = Inline)
+        $pdf->Output('I', 'Factura_' . str_pad($cita->id, 4, '0', STR_PAD_LEFT) . '.pdf', true);
+        
+        exit(); 
+    }
+
     private function handleError()
     {
         // Incluir y cargar el controlador de errores

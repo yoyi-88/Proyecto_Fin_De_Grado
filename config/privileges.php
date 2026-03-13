@@ -32,4 +32,6 @@
     $GLOBALS['citas']['edit']   = [1]; 
     $GLOBALS['citas']['update'] = [1];
     $GLOBALS['citas']['show']   = [1, 3]; // Ver detalle de una cita
+    $GLOBALS['citas']['read']   = [1, 2, 3]; 
+
 ?>

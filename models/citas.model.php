@@ -101,7 +101,8 @@ class citasModel extends Model {
                     c.*, 
                     u.name as cliente_nombre, 
                     u.email as cliente_email,
-                    m.nombre as menu_nombre
+                    m.nombre as menu_nombre,
+                    m.precio as menu_precio
                 FROM citas c
                 INNER JOIN users u ON c.user_id = u.id
                 INNER JOIN menus m ON c.menu_id = m.id
