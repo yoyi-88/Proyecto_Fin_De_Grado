@@ -1,0 +1,1 @@
+ALTER TABLE menus ADD imagen VARCHAR(255) DEFAULT 'default.jpg' AFTER descripcion;
