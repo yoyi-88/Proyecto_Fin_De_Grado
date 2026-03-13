@@ -100,6 +100,7 @@ class citasModel extends Model {
             $sql = "SELECT 
                     c.*, 
                     u.name as cliente_nombre, 
+                    u.email as cliente_email,
                     m.nombre as menu_nombre
                 FROM citas c
                 INNER JOIN users u ON c.user_id = u.id

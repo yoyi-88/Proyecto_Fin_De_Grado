@@ -182,13 +182,43 @@ class Citas extends Controller
         }
 
         $id = (int)$params[0];
-        $estado = $_POST['estado'] ?? 'Pendiente';
-        // Aquí podrías recoger también fecha/hora si permites reprogramar
+        $estado_nuevo = filter_var($_POST['estado'] ?? 'Pendiente', FILTER_SANITIZE_SPECIAL_CHARS);
+        // 1. LEER DATOS ANTES DE ACTUALIZAR (Para saber el email, nombre y estado antiguo)
+        $cita_db = $this->model->read($id);
 
-        $this->model->update_estado($id, $estado);
+        // 2. ACTUALIZAR ESTADO (Tu código original)
+        $this->model->update_estado($id, $estado_nuevo);
+
+        // 3. LÓGICA DEL CORREO: Si el estado ha cambiado, enviamos el email
+        if ($cita_db->estado !== $estado_nuevo) {
+            
+            // Usamos los datos que trajimos en el paso 1
+            $destinatario = $cita_db->cliente_email; 
+            $nombre = $cita_db->cliente_nombre;
+            $asunto = "Actualización de tu reserva - Chef Privado";
+
+            $cuerpoEmail = "
+                <div style='font-family: Arial, sans-serif; color: #333;'>
+                    <h2 style='color: #d4af37;'>Hola, {$nombre}</h2>
+                    <p>El estado de tu reserva con <strong>De Mi Casa a la Tuya</strong> ha cambiado.</p>
+                    
+                    <div style='background-color: #f8f9fa; padding: 15px; border-left: 4px solid #d4af37; margin: 20px 0;'>
+                        <p><strong>Menú:</strong> {$cita_db->menu_nombre}</p>
+                        <p><strong>Fecha:</strong> " . date('d/m/Y', strtotime($cita_db->fecha)) . " a las {$cita_db->hora}</p>
+                        <p><strong>Nuevo Estado:</strong> <span style='font-size: 1.2em; text-transform: uppercase;'>{$estado_nuevo}</span></p>
+                    </div>
+                    
+                    <p>Un saludo cordial,<br><strong>El equipo de Chef Privado</strong></p>
+                </div>
+            ";
+
+            // Envio del correo
+            $this->enviarEmail($nombre, $destinatario, $asunto, $cuerpoEmail);
+        }
 
         $_SESSION['mensaje'] = "Estado de la cita actualizado.";
         header('Location: ' . URL . 'citas');
+        exit();
     }
 
     /*
@@ -216,6 +246,67 @@ class Citas extends Controller
         if (!in_array($_SESSION['role_id'], $allowedRoles)) {
             $_SESSION['error'] = 'No tienes permisos para realizar esta acción.';
             header('Location: ' . URL . 'citas'); exit();
+        }
+    }
+
+    /*
+        Envía un email desde el sistema al usuario
+    */
+    /*
+        Envía un email desde el sistema al usuario
+    */
+    function enviarEmail($name, $email, $subject, $message)
+    {
+        require_once 'config/smtp_gmail.php';
+        require_once 'vendor/autoload.php';
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+
+        try {
+            $mail->CharSet = "UTF-8";
+            $mail->Encoding = "quoted-printable";
+            $mail->isSMTP();
+            $mail->Host = SMTP_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = SMTP_USER;
+            $mail->Password = SMTP_PASS;
+            $mail->Port = SMTP_PORT;
+            $mail->SMTPSecure = 'tls';
+
+            // Configurar el email: Remitente (Sistema) -> Destinatario (Usuario)
+            $mail->setFrom(SMTP_USER, 'De Mi Casa a la Tuya');
+            $mail->addAddress($email, $name);
+            
+            // Le decimos a PHPMailer que el cuerpo del mensaje contiene etiquetas HTML
+            $mail->isHTML(true); 
+
+            $mail->Subject = $subject;
+            $mail->Body = $message;
+            
+            // Opcional pero muy recomendado para evitar ir a Spam: 
+            // Versión en texto plano por si el cliente de correo del usuario no soporta HTML
+            $mail->AltBody = strip_tags($message); 
+
+            $mail->send();
+        } catch (Exception $e) {
+            $mensaje_error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            $this->handleError($mensaje_error); // Reutilizamos tu manejador de errores
+        }
+    }
+
+    private function handleError()
+    {
+        // Incluir y cargar el controlador de errores
+        $errorControllerFile = CONTROLLER_PATH . ERROR_CONTROLLER . '.php';
+
+        if (file_exists($errorControllerFile)) {
+            require_once $errorControllerFile;
+            $mensaje = "Error de validación de seguridad del formulario. Intenta acceder de nuevo desde la página principal";
+            $controller = new Errores('403', 'Mensaje de Error: ', $mensaje);
+        } else {
+            // Fallback en caso de que el controlador de errores no exista
+            echo "Error crítico: " . "No se pudo cargar el controlador de errores.";
+            exit();
         }
     }
 }
