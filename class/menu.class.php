@@ -8,17 +8,20 @@ class class_menu {
     public $id;
     public $nombre;
     public $descripcion;
+    public $imagen;
     public $precio;
 
     public function __construct(
         $id = null,
         $nombre = null,
         $descripcion = null,
+        $imagen = 'default.jpg',
         $precio = null
     ) {
         $this->id = $id;
         $this->nombre = $nombre;
         $this->descripcion = $descripcion;
+        $this->imagen = $imagen;
         $this->precio = $precio;
     }
 }
