@@ -280,11 +280,31 @@ class Menu extends Controller
         $precio = filter_var($_POST['precio'] ?? '', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
         // Crear objeto con los datos actualizados y obtener los originales de la BD
-        $menu_act = new class_menu($id, $nombre, $descripcion, $precio);
         $menu_db = $this->model->read($id);
 
         $errores = [];
         $cambios = false;
+
+        // Procesar images si se subió
+        $nombreImagen = $menu_db->imagen; // Por defecto, conservamos la imagen que ya tenía
+        $erroresImagen = [];
+
+        // Comprobamos si el usuario seleccionó un archivo nuevo (error 4 significa "vacío")
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== 4) {
+            $resultadoImagen = $this->procesarImagen($_FILES['imagen']);
+            
+            if (is_array($resultadoImagen)) {
+                $erroresImagen = $resultadoImagen;
+            } else {
+                $nombreImagen = $resultadoImagen; // Guardamos el nombre de la foto nueva
+                $cambios = true; // ¡Importante! Ha cambiado la foto, así que hay cambios que guardar
+                
+                // (Opcional pero recomendado) Borrar la foto antigua del servidor para no acumular basura
+                if ($menu_db->imagen != 'default.jpg' && file_exists('public/images/menus/' . $menu_db->imagen)) {
+                    unlink('public/images/menus/' . $menu_db->imagen);
+                }
+            }
+        }
 
         // Comprobar cambios y validar
         if ($nombre != $menu_db->nombre) {
@@ -300,6 +320,12 @@ class Menu extends Controller
             if (empty($precio) || $precio <= 0) $errores['precio'] = 'El precio debe ser un número positivo.';
         }
 
+        // Fusionar los dos arrays de errores
+        $errores = array_merge($errores, $erroresImagen);
+
+        // Crear objeto actualizado
+        $menu_act = new class_menu($id, $nombre, $descripcion, $nombreImagen, $precio);
+        
         // Si hay errores, volver al formulario
         if (!empty($errores)) {
             $_SESSION['errores'] = $errores;
@@ -356,12 +382,12 @@ class Menu extends Controller
             return $errores;
         }
 
-        // 3. Generar un nombre único seguro (evita sobreescribir archivos)
+        // Generar un nombre único seguro (evita sobreescribir archivos)
         $extension = pathinfo($nombreArchivo, PATHINFO_EXTENSION);
         $nombreUnico = uniqid('menu_') . '.' . $extension;
-        $rutaDestino = 'public/img/menus/' . $nombreUnico;
+        $rutaDestino = 'public/images/menus/' . $nombreUnico;
 
-        // 4. Mover el archivo
+        // Mover el archivo
         if (move_uploaded_file($rutaTemporal, $rutaDestino)) {
             return $nombreUnico;
         } else {

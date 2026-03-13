@@ -7,7 +7,10 @@
                     <span class="badge bg-warning text-dark fs-6"><?= number_format($this->menu->precio, 2) ?> €</span>
                 </div>
                 <div class="card-body p-4">
-                    
+                    <div class="mb-4">
+                        <img src="<?= URL ?>public/images/menus/<?= $this->menu->imagen ?? 'default.jpg' ?>" alt="<?= $this->menu->nombre ?>"
+                            class="img-fluid rounded shadow-sm" style="width: 100%; height: auto; object-fit: cover;">
+                    </div>
                     <div class="mb-4">
                         <label class="form-label text-muted fw-bold small">NOMBRE DEL PLATO</label>
                         <p class="fs-5 fw-medium border-bottom pb-2"><?= htmlspecialchars($this->menu->nombre) ?></p>

@@ -25,7 +25,7 @@ class menuModel extends Model {
     */
     public function read(int $id) {
         try {
-            $sql = "SELECT id, nombre, descripcion, precio FROM menus WHERE id = :id LIMIT 1";
+            $sql = "SELECT id, nombre, descripcion, imagen, precio FROM menus WHERE id = :id LIMIT 1";
             $conn = $this->db->connect();
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -68,13 +68,14 @@ class menuModel extends Model {
     public function update($menu) {
         try {
             $sql = "UPDATE menus 
-                    SET nombre = :nombre, descripcion = :descripcion, precio = :precio, update_at = CURRENT_TIMESTAMP 
+                    SET nombre = :nombre, descripcion = :descripcion, imagen = :imagen, precio = :precio, update_at = CURRENT_TIMESTAMP 
                     WHERE id = :id";
             $conn = $this->db->connect();
             $stmt = $conn->prepare($sql);
 
             $stmt->bindParam(':nombre', $menu->nombre, PDO::PARAM_STR, 100);
             $stmt->bindParam(':descripcion', $menu->descripcion, PDO::PARAM_STR);
+            $stmt->bindParam(':imagen', $menu->imagen, PDO::PARAM_STR, 255);
             $stmt->bindParam(':precio', $menu->precio, PDO::PARAM_STR);
             $stmt->bindParam(':id', $menu->id, PDO::PARAM_INT);
 

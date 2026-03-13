@@ -66,7 +66,7 @@
                                                 onchange="validarTamanoImagen(this)">
 
                                             <small class="text-muted">Formatos recomendados: JPG, PNG, WEBP. Tamaño
-                                                máximo: 2MB.</small>
+                                                máximo: 10MB.</small>
                                             <small class="text-danger d-block">
                                                 <?= $this->errors['imagen'] ?? '' ?>
                                             </small>
