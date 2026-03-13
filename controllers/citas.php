@@ -289,7 +289,7 @@ class Citas extends Controller
 
             $mail->send();
         } catch (Exception $e) {
-            $mensaje_error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            $mensaje_error = "El mensaje no pudo ser enviado. Mailer Error: {$mail->ErrorInfo}";
             $this->handleError($mensaje_error); // Reutilizamos tu manejador de errores
         }
     }
