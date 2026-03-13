@@ -21,7 +21,8 @@
                         <div class="col-md-8 col-lg-6">
                             <div class="card shadow border-0">
                                 <div class="card-header bg-dark text-white py-3">
-                                    <h5 class="mb-0 card-title"><i class="bi bi-journal-plus"></i> Añadir Nuevo Menú</h5>
+                                    <h5 class="mb-0 card-title"><i class="bi bi-journal-plus"></i> Añadir Nuevo Menú
+                                    </h5>
                                 </div>
                                 <div class="card-body p-4">
 
@@ -29,7 +30,7 @@
                                         <div class="alert alert-danger"><?= $this->error ?></div>
                                     <?php endif; ?>
 
-                                    <form action="<?= URL ?>menu/create" method="POST">
+                                    <form action="<?= URL ?>menu/create" method="POST" enctype="multipart/form-data">
                                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
                                         <div class="mb-3">
@@ -40,8 +41,10 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="descripcion" class="form-label fw-bold">Descripción e Ingredientes</label>
-                                            <textarea class="form-control" name="descripcion" id="descripcion" rows="4" required><?= $this->menu->descripcion ?? '' ?></textarea>
+                                            <label for="descripcion" class="form-label fw-bold">Descripción e
+                                                Ingredientes</label>
+                                            <textarea class="form-control" name="descripcion" id="descripcion" rows="4"
+                                                required><?= $this->menu->descripcion ?? '' ?></textarea>
                                             <small class="text-danger"><?= $this->errors['descripcion'] ?? '' ?></small>
                                         </div>
 
@@ -49,10 +52,24 @@
                                             <label for="precio" class="form-label fw-bold">Precio (€)</label>
                                             <div class="input-group">
                                                 <span class="input-group-text">€</span>
-                                                <input type="number" step="0.01" class="form-control" name="precio" id="precio"
-                                                    value="<?= $this->menu->precio ?? '' ?>" required>
+                                                <input type="number" step="0.01" class="form-control" name="precio"
+                                                    id="precio" value="<?= $this->menu->precio ?? '' ?>" required>
                                             </div>
                                             <small class="text-danger"><?= $this->errors['precio'] ?? '' ?></small>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="imagen" class="form-label fw-bold">Fotografía del Menú</label>
+
+                                            <input type="file" class="form-control" name="imagen" id="imagen"
+                                                accept="image/jpeg, image/png, image/webp"
+                                                onchange="validarTamanoImagen(this)">
+
+                                            <small class="text-muted">Formatos recomendados: JPG, PNG, WEBP. Tamaño
+                                                máximo: 2MB.</small>
+                                            <small class="text-danger d-block">
+                                                <?= $this->errors['imagen'] ?? '' ?>
+                                            </small>
                                         </div>
 
                                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -60,6 +77,17 @@
                                             <button type="submit" class="btn btn-warning">Guardar Menú</button>
                                         </div>
                                     </form>
+                                    <script>
+                                        function validarTamanoImagen(input) {
+                                            if (input.files && input.files[0]) {
+                                                var tamano = input.files[0].size / 1024 / 1024; // en MB
+                                                if (tamano > 10) {
+                                                    alert("La imagen es demasiado grande. Máximo 10MB.");
+                                                    input.value = ""; // Limpia el input
+                                                }
+                                            }
+                                        }
+                                    </script>
                                 </div>
                             </div>
                         </div>

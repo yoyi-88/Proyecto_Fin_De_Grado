@@ -101,8 +101,25 @@ class Menu extends Controller
         $descripcion = filter_var($_POST['descripcion'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
         $precio = filter_var($_POST['precio'] ?? '', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
 
+        // Procesamiento y saneamiento de la Imagen
+        $nombreImagen = 'default.jpg'; // Imagen por defecto si no sube ninguna
+        $erroresImagen = [];
+
+        // Verificamos si existe el array de la imagen y si el usuario realmente seleccionó un archivo (error 4 es "no file")
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] !== 4) {
+            // Llamamos a nuestro método privado para que valide y guarde la imagen
+            $resultadoImagen = $this->procesarImagen($_FILES['imagen']);
+            
+            if (is_array($resultadoImagen)) {
+                // Si devuelve un array, significa que hubo errores (peso, formato incorrecto)
+                $erroresImagen = $resultadoImagen;
+            } else {
+                // Si devuelve un texto, es el nombre seguro generado (ej: menu_65ab34f.jpg)
+                $nombreImagen = $resultadoImagen;
+            }
+        }
         // Crear objeto para persistencia
-        $menu = new class_menu(null, $nombre, $descripcion, $precio);
+        $menu = new class_menu(null, $nombre, $descripcion, $nombreImagen, $precio);
 
         // Validación
         $errores = [];
@@ -122,6 +139,9 @@ class Menu extends Controller
         } elseif ((float)$precio <= 0) {
             $errores['precio'] = 'El precio debe ser positivo.';
         }
+
+        // Unir los errores de texto con los posibles errores de la imagen
+        $errores = array_merge($errores, $erroresImagen);
 
         // Si hay errores
         if (!empty($errores)) {

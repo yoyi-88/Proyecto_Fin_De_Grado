@@ -42,14 +42,15 @@ class menuModel extends Model {
     */
     public function create($menu) {
         try {
-            $sql = "INSERT INTO menus (nombre, descripcion, precio) 
-                    VALUES (:nombre, :descripcion, :precio)";
+            $sql = "INSERT INTO menus (nombre, descripcion, imagen, precio) 
+                    VALUES (:nombre, :descripcion, :imagen, :precio)";
             
             $conn = $this->db->connect();
             $stmt = $conn->prepare($sql);
 
             $stmt->bindParam(':nombre', $menu->nombre, PDO::PARAM_STR, 100);
             $stmt->bindParam(':descripcion', $menu->descripcion, PDO::PARAM_STR);
+            $stmt->bindParam(':imagen', $menu->imagen, PDO::PARAM_STR, 255);
             $stmt->bindParam(':precio', $menu->precio, PDO::PARAM_STR);
 
             $stmt->execute();
