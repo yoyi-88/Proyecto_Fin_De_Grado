@@ -97,11 +97,19 @@ class citasModel extends Model {
     */
     public function read($id) {
         try {
-            $sql = "SELECT * FROM citas WHERE id = :id LIMIT 1";
+            $sql = "SELECT 
+                    c.*, 
+                    u.name as cliente_nombre, 
+                    m.nombre as menu_nombre
+                FROM citas c
+                INNER JOIN users u ON c.user_id = u.id
+                INNER JOIN menus m ON c.menu_id = m.id
+                WHERE c.id = :id
+                LIMIT 1";
             $conn = $this->db->connect();
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'class_cita');
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
             $stmt->execute();
             return $stmt->fetch();
         } catch (PDOException $e) { $this->handleError($e); }
@@ -121,6 +129,26 @@ class citasModel extends Model {
         } catch (PDOException $e) { $this->handleError($e); }
     }
 
+    /*
+        Método: get_dias_ocupados()
+        Descripción: Devuelve un array con las fechas que ya tienen reservas Pendientes o Confirmadas.
+    */
+    public function get_dias_ocupados() {
+        try {
+            // Buscamos solo fechas con citas activas
+            $sql = "SELECT DISTINCT fecha FROM citas WHERE estado IN ('Pendiente', 'Confirmada')";
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+            
+            // Extraemos solo la columna 'fecha' en un array simple
+            $fechas = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            return $fechas; // Devolverá algo como: ['2026-03-20', '2026-03-25']
+            
+        } catch (PDOException $e) {
+            return []; // Si hay error, devolvemos array vacío para no romper el calendario
+        }
+    }
     private function handleError(PDOException $e) {
         // Tu controlador de errores estándar
         $errorControllerFile = CONTROLLER_PATH . ERROR_CONTROLLER . '.php';

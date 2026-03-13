@@ -191,6 +191,21 @@ class Citas extends Controller
         header('Location: ' . URL . 'citas');
     }
 
+    /*
+        Método: disponibilidad
+        Descripción: Endpoint (API) que devuelve en JSON los días ocupados.
+    */
+    public function disponibilidad() {
+        // No necesitamos cargar vistas, esto es una respuesta invisible para JavaScript
+        header('Content-Type: application/json');
+        
+        $diasOcupados = $this->model->get_dias_ocupados();
+        
+        // Imprimimos el array convertido a formato JSON
+        echo json_encode($diasOcupados);
+        exit(); // Cortamos la ejecución para que no intente cargar el diseño (footer, header, etc.)
+    }
+
     private function requireLogin() {
         if (!isset($_SESSION['user_id'])) {
             header('Location: ' . URL . 'auth/login'); exit();
