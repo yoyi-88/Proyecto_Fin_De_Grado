@@ -25,6 +25,9 @@
             <li class="nav-item">
               <a class="nav-link active text-warning" href="<?= URL ?>user">Usuarios</a>
             </li>
+              <li class="nav-item">
+                <a class="nav-link active text-warning" href="<?= URL ?>dashboard">Dashboard</a>
+              </li>
           <?php endif; ?>
           
         <?php endif; ?>
