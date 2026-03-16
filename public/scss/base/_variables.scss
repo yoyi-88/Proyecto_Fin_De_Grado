@@ -1,0 +1,19 @@
+// assets/scss/base/_variables.scss
+
+// Colores de la marca "De Mi Casa a la Tuya"
+$primary:       #D4AF37; // Tu dorado premium
+$secondary:     #212529; // Tu gris casi negro
+$success:       #198754; 
+$danger:        #dc3545; 
+
+// Tipografía (Ej: Cambiar a una fuente de Google Fonts más elegante)
+$font-family-sans-serif: 'Playfair Display', serif;
+$font-family-base:       'Lato', sans-serif;
+
+// Bordes más suaves
+$border-radius: 0.5rem;
+$border-radius-lg: 0.8rem;
+
+// Sombras más elegantes
+$box-shadow-sm: 0 .125rem .25rem rgba(0,0,0,.05);
+$box-shadow:    0 .5rem 1rem rgba(0,0,0,.08);
