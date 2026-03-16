@@ -404,7 +404,7 @@ class Auth extends Controller
 
             $mail->send();
         } catch (Exception $e) {
-            $mensaje_error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            $mensaje_error = "El mensaje no pudo ser enviado. Mailer Error: {$mail->ErrorInfo}";
             $this->handleError($mensaje_error); // Reutilizamos tu manejador de errores
         }
     }
@@ -424,5 +424,157 @@ class Auth extends Controller
             echo "Error crítico: " . "No se pudo cargar el controlador de errores.";
             exit();
         }
+    }
+
+    /*
+        Método: forgot_password()
+        Descripción: Muestra el formulario para solicitar la recuperación de contraseña
+    */
+    public function forgot_password() {
+        sec_session_start();
+
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        $this->view->title = "Recuperar Contraseña";
+        $this->view->render('auth/forgot/index');
+    }
+
+    /*
+        Método: send_reset_token()
+        Descripción: Procesa el email, genera el token y envía el correo
+    */
+    public function send_reset_token() {
+        sec_session_start();
+
+        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            $this->handleError();
+        }
+
+        $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = "Formato de email incorrecto.";
+            header('Location: ' . URL . 'auth/forgot_password');
+            exit();
+        }
+
+        $user = $this->model->get_user_email($email);
+
+        // Si el usuario existe, generamos el token
+        if ($user) {
+            // Generar token criptográficamente seguro
+            $token = bin2hex(random_bytes(32));
+            // Fecha de caducidad: 1 hora desde ahora
+            $expires_at = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+            // Guardamos el token en la base de datos
+            $this->model->setResetToken($email, $token, $expires_at);
+
+            // Preparamos el email
+            $enlace_recuperacion = URL . "auth/reset_password/" . $token;
+            $asunto = "Recuperación de contraseña - De Mi Casa a la Tuya";
+            
+            // HTML del correo
+            $mensaje = "
+                <h2>Hola, {$user->name}</h2>
+                <p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva:</p>
+                <p><a href='{$enlace_recuperacion}' style='padding: 10px 15px; background-color: #212529; color: white; text-decoration: none; border-radius: 5px;'>Restablecer Contraseña</a></p>
+                <p><em>Este enlace caducará en 1 hora. Si no has solicitado este cambio, ignora este correo.</em></p>
+            ";
+
+            // Enviar correo (Asegúrate de tener $mail->isHTML(true); en tu método enviarEmail de Auth)
+            $this->enviarEmail($user->name, $email, $asunto, $mensaje);
+        }
+
+        // MENSAJE GENÉRICO (Medida de seguridad contra enumeración de usuarios)
+        $_SESSION['mensaje'] = "Si el correo electrónico está registrado, recibirás un enlace para restablecer tu contraseña.";
+        header('Location: ' . URL . 'auth/login');
+        exit();
+    }
+
+    /*
+        Método: reset_password($params)
+        Descripción: Verifica el token en la URL y muestra el formulario para la nueva clave
+    */
+    public function reset_password($params) {
+        sec_session_start();
+
+        $token = $params[0] ?? '';
+
+        if (empty($token)) {
+            $_SESSION['error'] = "Enlace de recuperación no válido.";
+            header('Location: ' . URL . 'auth/login');
+            exit();
+        }
+
+        // Verificamos si el token es válido y no ha caducado
+        $user_id = $this->model->verifyResetToken($token);
+
+        if (!$user_id) {
+            $_SESSION['error'] = "El enlace de recuperación ha caducado o no es válido. Vuelve a solicitarlo.";
+            header('Location: ' . URL . 'auth/forgot_password');
+            exit();
+        }
+
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        $this->view->title = "Crear Nueva Contraseña";
+        $this->view->token = $token; // Pasamos el token a la vista
+        $this->view->render('auth/reset/index');
+    }
+
+    /*
+        Método: update_password()
+        Descripción: Procesa la nueva contraseña y actualiza la BD
+    */
+    public function update_password() {
+        sec_session_start();
+
+        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            $this->handleError();
+        }
+
+        $token = filter_var($_POST['token'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $password = filter_var($_POST['password'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $password_confirm = filter_var($_POST['password_confirm'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+
+        // Validaciones básicas
+        if (empty($password) || strlen($password) < 7) {
+            $_SESSION['error'] = "La contraseña debe tener al menos 7 caracteres.";
+            header('Location: ' . URL . 'auth/reset_password/' . $token);
+            exit();
+        }
+
+        if ($password !== $password_confirm) {
+            $_SESSION['error'] = "Las contraseñas no coinciden.";
+            header('Location: ' . URL . 'auth/reset_password/' . $token);
+            exit();
+        }
+
+        // Verificamos el token POR SEGUNDA VEZ (Crítico por seguridad)
+        $user_id = $this->model->verifyResetToken($token);
+
+        if (!$user_id) {
+            $_SESSION['error'] = "El token ha caducado durante el proceso.";
+            header('Location: ' . URL . 'auth/login');
+            exit();
+        }
+
+        // Hasheamos la nueva contraseña
+        $password_enc = password_hash($password, PASSWORD_DEFAULT);
+
+        // Actualizamos la base de datos (borrando también el token)
+        if ($this->model->updatePasswordWithToken($user_id, $password_enc)) {
+            $_SESSION['mensaje'] = "Tu contraseña ha sido actualizada correctamente. Ya puedes iniciar sesión.";
+        } else {
+            $_SESSION['error'] = "Hubo un problema al actualizar la contraseña.";
+        }
+
+        header('Location: ' . URL . 'auth/login');
+        exit();
     }
 }

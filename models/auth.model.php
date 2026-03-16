@@ -301,7 +301,7 @@ class authModel extends Model
     }
 
     /*
-        Actualiza la contraseña y "quema" (borra) el token para que no se pueda volver a usar
+        Actualiza la contraseña y borra el token para que no se pueda volver a usar
     */
     public function updatePasswordWithToken($id, $hashed_password) {
         try {
