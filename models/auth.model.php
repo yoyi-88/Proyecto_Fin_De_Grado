@@ -264,6 +264,58 @@ class authModel extends Model
         }
     }
 
+    /*
+        Guarda el token de recuperación y su fecha de caducidad
+    */
+    public function setResetToken($email, $token, $expires_at) {
+        try {
+            $sql = "UPDATE users SET reset_token = :token, reset_token_expires_at = :expires_at WHERE email = :email";
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+            $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /*
+        Verifica si el token es válido y no ha caducado. Devuelve el ID del usuario si es correcto.
+    */
+    public function verifyResetToken($token) {
+        try {
+            // Comprobamos que el token coincida y que la fecha de caducidad sea MAYOR que la fecha/hora actual
+            $sql = "SELECT id FROM users WHERE reset_token = :token AND reset_token_expires_at > NOW() LIMIT 1";
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+            $stmt->execute();
+            
+            $user = $stmt->fetch(PDO::FETCH_OBJ);
+            return $user ? $user->id : false;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    /*
+        Actualiza la contraseña y "quema" (borra) el token para que no se pueda volver a usar
+    */
+    public function updatePasswordWithToken($id, $hashed_password) {
+        try {
+            $sql = "UPDATE users SET password = :password, reset_token = NULL, reset_token_expires_at = NULL WHERE id = :id";
+            $conn = $this->db->connect();
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
 
     public function handleError(PDOException $e)
     {
