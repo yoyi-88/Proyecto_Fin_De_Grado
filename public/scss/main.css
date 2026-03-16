@@ -12147,6 +12147,24 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, .catalog-title {
   padding: 0.5rem 1rem !important;
 }
 
+.account-nav {
+  margin-bottom: -1px;
+}
+.account-nav .nav-link {
+  border-radius: 0.5rem 0.5rem 0 0;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+.account-nav .nav-link.active {
+  background-color: white !important;
+  color: #212529 !important;
+}
+.account-nav .nav-link:not(.active):hover {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
 body {
   font-family: "Lato", sans-serif;
   display: flex;

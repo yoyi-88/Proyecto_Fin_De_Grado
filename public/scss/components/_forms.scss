@@ -109,3 +109,25 @@
     font-size: 1rem !important;
     padding: 0.5rem 1rem !important;
 }
+
+// Estilo para el menú de navegación de "Mi Cuenta"
+.account-nav {
+    margin-bottom: -1px; // Para que se pegue al borde inferior del header
+    
+    .nav-link {
+        border-radius: $border-radius $border-radius 0 0;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        
+        &.active {
+            background-color: white !important;
+            color: $dark !important;
+        }
+
+        &:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.9) !important;
+        }
+    }
+}

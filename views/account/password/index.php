@@ -1,72 +1,40 @@
-<!-- Capa Principal -->
-<div class="container">
-    <br><br><br><br><br>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <?php require_once("template/partials/mensaje.partial.php") ?>
-            <?php require_once("template/partials/error.partial.php") ?>
-            <div class="card">
-                <div class="card-header"><?= $this->title ?></div>
-                <div class="card-header">
-                    <?php require_once("views/account/partials/menu.partial.php") ?>
-                </div>
-                <div class="card-body">
-                    <form action="<?= URL ?>account/update_password" method="post">
+<div class="container form-page">
+    <?php require_once("template/partials/mensaje.partial.php") ?>
+    <?php require_once("template/partials/error.partial.php") ?>
 
-                        <!-- token crsf -->
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <div class="form-card shadow-sm">
+        <div class="form-card-header bg-dark text-white flex-column align-items-stretch gap-3 pb-0">
+            <h5 class="form-card-title"><i class="bi bi-shield-lock"></i> <?= $this->title ?></h5>
+            <?php require_once("views/account/partials/menu.partial.php") ?>
+        </div>
+        
+        <div class="form-card-body">
+            <form action="<?= URL ?>account/update_password" method="POST">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-                        <!-- campo password actual -->
-                        <div class="mb-3 row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">Password
-                                actual</label>
-                            <div class="col-md-6">
-                                <input id="password" type="password"
-                                    class="form-control <?= (isset($this->errors['password'])) ? 'is-invalid' : null ?>"
-                                    name="password" required autocomplete="password" autofocus>
-                                <!-- control de errores -->
-                                <span class="form-text text-danger" role="alert">
-                                    <?= $this->errors['password'] ??= '' ?>
-                                </span>
-                            </div>
-                        </div>
-                        <!-- campo nuevo password -->
-                        <div class="mb-3 row">
-                            <label for="new_password" class="col-md-4 col-form-label text-md-right">Nuevo
-                                password</label>
-                            <div class="col-md-6">
-                                <input id="new_password" type="password"
-                                    class="form-control <?= (isset($this->errors['new_password'])) ? 'is-invalid' : null ?>"
-                                    name="new_password" required autocomplete="new_password" autofocus>
-                                <!-- control de errores -->
-                                <span class="form-text text-danger" role="alert">
-                                    <?= $this->errors['new_password'] ??= '' ?>
-                                </span>
-                            </div>
-                        </div>
-                        <!-- campo confirmación password  -->
-                        <div class="mb-3 row">
-                            <label for="confirm_password" class="col-md-4 col-form-label text-md-right">Confirmar
-                                password</label>
-                            <div class="col-md-6">
-                                <input id="confirm_password" type="password"
-                                    class="form-control <?= (isset($this->errors['confirm_password'])) ? 'is-invalid' : null ?>"
-                                    name="confirm_password" required autocomplete="confirm_password" autofocus>
-                            </div>
-                        </div>
-                        <!-- botones de acción -->
-                        <div class="mb-3 row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <a class="btn btn-secondary" href="<?= URL ?>account" role="button">Cancelar</a>
-                                <button type="reset" class="btn btn-secondary">Reset</button>
-                                <button type="submit" class="btn btn-primary">Actualizar Password</button>
-                            </div>
-                        </div>
-                    </form>
+                <div class="form-group">
+                    <label for="password" class="custom-label">Contraseña Actual</label>
+                    <input id="password" type="password" class="form-control <?= (isset($this->errors['password'])) ? 'is-invalid' : '' ?>" name="password" required autofocus>
+                    <small class="form-error"><?= $this->errors['password'] ?? '' ?></small>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <label for="new_password" class="custom-label">Nueva Contraseña</label>
+                    <input id="new_password" type="password" class="form-control <?= (isset($this->errors['new_password'])) ? 'is-invalid' : '' ?>" name="new_password" required>
+                    <small class="form-error"><?= $this->errors['new_password'] ?? '' ?></small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password" class="custom-label">Confirmar Nueva Contraseña</label>
+                    <input id="confirm_password" type="password" class="form-control <?= (isset($this->errors['confirm_password'])) ? 'is-invalid' : '' ?>" name="confirm_password" required>
+                    <small class="form-error"><?= $this->errors['confirm_password'] ?? '' ?></small>
+                </div>
+
+                <div class="form-actions border-top-actions">
+                    <button type="reset" class="btn btn-light">Limpiar</button>
+                    <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+                </div>
+            </form>
         </div>
     </div>
-
-
 </div>

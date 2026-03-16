@@ -1,20 +1,15 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link " href="<?= URL ?>account">Mostrar</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="<?= URL ?>account/edit">Editar</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="<?= URL ?>account/password">Cambiar Password</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link " href="<?= URL ?>account/delete/<?= $_SESSION['csrf_token'] ?>" onclick="return confirm('Confimar eliminación de su cuenta')">Eliminar</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<ul class="nav nav-pills account-nav gap-2">
+    <li class="nav-item">
+        <a class="nav-link <?= ($this->view == 'account/main/index') ? 'active' : 'bg-light text-dark' ?>" href="<?= URL ?>account">Mis Datos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <?= ($this->view == 'account/edit/index') ? 'active' : 'bg-light text-dark' ?>" href="<?= URL ?>account/edit">Editar Perfil</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link <?= ($this->view == 'account/password/index') ? 'active' : 'bg-light text-dark' ?>" href="<?= URL ?>account/password">Contraseña</a>
+    </li>
+    <li class="nav-item ms-auto"> <a class="btn btn-outline-danger" href="<?= URL ?>account/delete/<?= $_SESSION['csrf_token'] ?>" onclick="return confirm('¿Estás seguro de que deseas eliminar tu cuenta para siempre?');">
+            <i class="bi bi-trash3"></i> Eliminar Cuenta
+        </a>
+    </li>
+</ul>
