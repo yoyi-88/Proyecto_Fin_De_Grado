@@ -1,0 +1,57 @@
+// components/_cards.scss
+
+.menu-card {
+    border: none;
+    box-shadow: $box-shadow-sm; // Usando tu variable
+    border-radius: $border-radius;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    // Efecto interactivo al pasar el ratón
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: $box-shadow;
+    }
+
+    // Cabecera (Contenedor de imagen y precio)
+    &-header {
+        position: relative;
+    }
+
+    // Imagen (Sustituye al style en línea)
+    &-img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    // Etiqueta del precio
+    &-price {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: $dark;
+        color: white;
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.15);
+    }
+
+    &-title {
+        color: $dark;
+        margin-bottom: 1rem;
+    }
+
+    &-desc {
+        color: #6c757d; // Equivalente a text-muted
+    }
+
+    // Botonera de abajo
+    &-actions {
+        background-color: transparent;
+        border-top: none;
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 1rem;
+    }
+}

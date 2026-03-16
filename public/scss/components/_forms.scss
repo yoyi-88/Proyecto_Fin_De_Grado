@@ -1,0 +1,111 @@
+// components/_forms.scss
+
+// Contenedor principal para centrar los formularios y detalles
+.form-page {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    max-width: 700px; // Evita que los formularios se estiren a lo ancho de toda la pantalla
+    margin: 0 auto;
+}
+
+// Estilos compartidos para las tarjetas de formularios y de vista "Show"
+.form-card, .detail-card {
+    background: white;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    border: none;
+    
+    &-header, .detail-header {
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .form-card-title, .detail-title {
+            margin: 0;
+            font-family: $font-family-sans-serif;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    }
+
+    &-body, .detail-body {
+        padding: 2rem;
+    }
+}
+
+// Elementos del Formulario
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.custom-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #6c757d; // Muted
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-error {
+    color: $danger;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.form-hint {
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.border-top-actions {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1.5rem;
+}
+
+// Elementos específicos de la vista Show (Detalle)
+.detail-img-container {
+    margin-bottom: 2rem;
+    border-radius: $border-radius;
+    overflow: hidden;
+    box-shadow: $box-shadow-sm;
+}
+
+.detail-img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    display: block; // Quita el margen inferior por defecto de las imágenes
+}
+
+.detail-section {
+    margin-bottom: 1.5rem;
+
+    .detail-text {
+        font-size: 1.1rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 0.5rem;
+        
+        &.main-title {
+            font-family: $font-family-sans-serif;
+            font-size: 1.5rem;
+            color: $primary;
+        }
+    }
+}
+
+.price-badge {
+    font-size: 1rem !important;
+    padding: 0.5rem 1rem !important;
+}
