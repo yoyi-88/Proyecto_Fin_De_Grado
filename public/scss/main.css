@@ -12045,6 +12045,99 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, .catalog-title {
   padding-bottom: 1rem;
 }
 
+.widget-card {
+  background-color: white;
+  border-radius: 0.8rem;
+  border: none;
+  border-bottom: 4px solid transparent;
+  display: flex;
+  align-items: center;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.widget-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+}
+.widget-card.widget-warning {
+  border-bottom-color: #ffc107;
+}
+.widget-card.widget-dark {
+  border-bottom-color: #212529;
+}
+.widget-card.widget-success {
+  border-bottom-color: #198754;
+}
+.widget-card .widget-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+}
+.widget-card .widget-content {
+  flex-grow: 1;
+}
+.widget-card .widget-content .widget-label {
+  color: #6c757d;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.5px;
+}
+.widget-card .widget-content .widget-value {
+  color: #212529;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1;
+}
+
+.chart-card {
+  background-color: white;
+  border-radius: 0.8rem;
+  border: none;
+  overflow: hidden;
+}
+.chart-card .chart-card-header {
+  padding: 1.5rem 1.5rem 0;
+  background: transparent;
+  border-bottom: none;
+}
+.chart-card .chart-card-header .chart-title {
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  font-size: 1.25rem;
+  color: #212529;
+  font-weight: bold;
+}
+.chart-card .chart-card-body {
+  padding: 1.5rem;
+  height: calc(100% - 3rem);
+}
+
+.chart-container-donut {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.chart-container-bar {
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.dashboard-title {
+  font-family: "Playfair Display", serif;
+  font-weight: bold;
+  color: #212529;
+}
+
 .form-page {
   padding-top: 3rem;
   padding-bottom: 3rem;
