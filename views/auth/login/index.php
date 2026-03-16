@@ -51,7 +51,7 @@
                                 <a class="btn btn-outline-secondary ms-2" href="<?= URL ?>auth/register">Registrarme</a>
                                 
                                 <div class="mt-3">
-                                    <a class="text-decoration-none text-muted small" href="#">¿Olvidó su contraseña?</a>
+                                    <a class="text-decoration-none text-muted small" href="<?= URL ?>auth/forgot_password">¿Olvidó su contraseña?</a>
                                 </div>
                             </div>
                         </div>
