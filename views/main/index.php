@@ -1,42 +1,73 @@
-<div class="bg-dark text-white py-5 text-center" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1556910103-1c02745a30bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; min-height: 60vh; display: flex; align-items: center;">
-    <div class="container">
-        <h1 class="display-3 fw-bold mb-3">De Mi Casa a la Tuya</h1>
-        <p class="lead mb-4 fs-4">Alta cocina, ingredientes de mercado y experiencias exclusivas sin salir de tu hogar.</p>
+<section class="hero-section">
+    <div class="container text-center">
+        <h1 class="hero-title">De Mi Casa a la Tuya</h1>
+        <p class="hero-subtitle">Alta cocina, ingredientes de mercado y experiencias exclusivas sin salir de tu hogar.</p>
         
-        <div class="d-flex justify-content-center gap-3">
+        <div class="hero-actions d-flex justify-content-center gap-3">
             <?php if (!isset($_SESSION['user_id'])): ?>
-                <a href="<?= URL ?>auth/login" class="btn btn-warning btn-lg px-4 fw-bold">Reservar Ahora</a>
+                <a href="<?= URL ?>auth/login" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm">Reservar Ahora</a>
                 <a href="<?= URL ?>menu" class="btn btn-outline-light btn-lg px-4">Ver Carta</a>
             <?php else: ?>
-                <a href="<?= URL ?>citas/new" class="btn btn-warning btn-lg px-4 fw-bold">Nueva Reserva</a>
+                <a href="<?= URL ?>citas/new" class="btn btn-primary btn-lg px-4 fw-bold shadow-sm">Nueva Reserva</a>
                 <a href="<?= URL ?>menu" class="btn btn-outline-light btn-lg px-4">Ver Carta</a>
             <?php endif; ?>
         </div>
     </div>
-</div>
+</section>
 
-<div class="container py-5">
+<section class="features-section container py-5 my-4">
     <div class="row text-center g-4">
         <div class="col-md-4">
-            <div class="p-3">
-                <i class="bi bi-calendar-check fs-1 text-warning mb-3"></i>
-                <h3>Reserva Fácil</h3>
-                <p class="text-muted">Elige el día y la hora. Nosotros nos encargamos de la compra y la preparación.</p>
+            <div class="feature-box">
+                <i class="bi bi-calendar-check feature-icon"></i>
+                <h3 class="feature-title">Reserva Fácil</h3>
+                <p class="text-muted">Elige el día y la hora. Nosotros nos encargamos de la compra, la preparación y la limpieza.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="p-3">
-                <i class="bi bi-stars fs-1 text-warning mb-3"></i>
-                <h3>Calidad Premium</h3>
-                <p class="text-muted">Ingredientes seleccionados personalmente cada mañana en el mercado local.</p>
+            <div class="feature-box">
+                <i class="bi bi-stars feature-icon"></i>
+                <h3 class="feature-title">Calidad Premium</h3>
+                <p class="text-muted">Ingredientes seleccionados personalmente cada mañana en el mercado local para garantizar su frescura.</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="p-3">
-                <i class="bi bi-heart fs-1 text-warning mb-3"></i>
-                <h3>Personalizado</h3>
-                <p class="text-muted">Adaptamos el menú a alergias, intolerancias y preferencias de tus invitados.</p>
+            <div class="feature-box">
+                <i class="bi bi-heart feature-icon"></i>
+                <h3 class="feature-title">Menú Personalizado</h3>
+                <p class="text-muted">Adaptamos cada plato a las alergias, intolerancias y preferencias gastronómicas de tus invitados.</p>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<section class="chef-section bg-white py-5">
+    <div class="container my-4">
+        <div class="row align-items-center shadow-sm rounded-4 overflow-hidden chef-card">
+            
+            <div class="col-md-5 p-0">
+                <img src="public/images/img-cocinero.jpeg" 
+                     alt="Retrato del Chef" 
+                     class="chef-portrait">
+            </div>
+
+            <div class="col-md-7 p-5">
+                <span class="badge bg-light text-primary border border-primary mb-3 px-3 py-2 letter-spacing-1">SOBRE MÍ</span>
+                <h2 class="chef-name mb-4">Pasión por la gastronomía, directamente en tu mesa.</h2>
+                
+                <p class="text-muted lead fs-6 mb-4">
+                    Tras haber trabajado en numerosas cocinas de diferentes estilos, decidi dar el salto a este proyecto para que puedas degustar la alta gastronomía desde la comodidad de tu casa.
+                </p>
+
+                <ul class="chef-list list-unstyled mb-4">
+                    <li class="mb-3"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle"></i> Graduado en la escuela de hostelería de Cádiz.</li>
+                    <li class="mb-3"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle"></i> Especialista en cocina fusión y técnicas de vanguardia.</li>
+                    <li class="mb-3"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle"></i> Especialista en cocina tradicional.</li>
+                </ul>
+
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Firma_de_ejemplo.svg" alt="Firma del Chef" class="chef-signature opacity-50" style="max-height: 60px;">
+            </div>
+
+        </div>
+    </div>
+</section>

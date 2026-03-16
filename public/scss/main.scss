@@ -16,6 +16,9 @@
 @import 'layout/navbar';
 @import 'layout/footer';
 
+// Página principal
+@import 'pages/home';
+
 body {
     font-family: 'Lato', sans-serif;
     display: flex;
