@@ -1,91 +1,60 @@
-<!-- Capa Principal -->
-<div class="container">
-    <br><br><br><br><br>
+<div class="container form-page">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-8 col-lg-6">
+            
             <?php require_once("template/partials/mensaje.partial.php") ?>
             <?php require_once("template/partials/error.partial.php") ?>
-            <div class="card">
-                <div class="card-header">Formulario de Contacto</div>
-                <div class="card-body">
+            
+            <div class="form-card shadow-sm">
+                <div class="form-card-header bg-dark text-white">
+                    <h5 class="form-card-title"><i class="bi bi-envelope-paper"></i> Formulario de Contacto</h5>
+                </div>
+                
+                <div class="form-card-body">
+                    <p class="text-muted mb-4">¿Tienes alguna duda sobre nuestros menús o servicios de Chef Privado? Escríbenos y te responderemos lo antes posible.</p>
+
                     <form method="POST" action="<?= URL ?>contact/validate">
-                        <!-- token csrf -->
-                        <input type="hidden" name="csrf_token"
-                            value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
 
-                        <!-- campo name -->
-                        <div class="mb-3 row">
-                            <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
+                        <div class="row">
                             <div class="col-md-6">
-                                <input id="name" type="name"
-                                    class="form-control <?= (isset($this->errores['name'])) ? 'is-invalid' : null ?>"
-                                    name="name" value="<?= htmlspecialchars($this->contact->name); ?>" required
-                                    autocomplete="name" autofocus>
-                                <!-- control de errores -->
-                                <span class="form-text text-danger" role="alert">
-                                    <?= $this->error['name'] ??= '' ?>
-                                </span>
+                                <div class="form-group">
+                                    <label for="name" class="custom-label">Tu Nombre</label>
+                                    <input id="name" type="text" class="form-control <?= (isset($this->errores['name'])) ? 'is-invalid' : '' ?>" name="name" value="<?= htmlspecialchars($this->contact->name ?? ''); ?>" required autocomplete="name" autofocus>
+                                    <small class="form-error"><?= $this->error['name'] ?? '' ?></small>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email" class="custom-label">Tu Email</label>
+                                    <input id="email" type="email" class="form-control <?= (isset($this->errores['email'])) ? 'is-invalid' : '' ?>" name="email" value="<?= htmlspecialchars($this->contact->email ?? ''); ?>" required autocomplete="email">
+                                    <small class="form-error"><?= $this->error['email'] ?? '' ?></small>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- campo email -->
-                        <div class="mb-3 row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
-                            <div class="col-md-6">
-                                <input id="email" type="email"
-                                    class="form-control <?= (isset($this->errores['email'])) ? 'is-invalid' : null ?>"
-                                    name="email" value="<?= htmlspecialchars($this->contact->email); ?>" required
-                                    autocomplete="email" autofocus>
-                                <!-- control de errores -->
-                                <span class="form-text text-danger" role="alert">
-                                    <?= $this->error['email'] ??= '' ?>
-                                </span>
-                            </div>
+                        <div class="form-group">
+                            <label for="subject" class="custom-label">Asunto</label>
+                            <input id="subject" type="text" class="form-control <?= (isset($this->errores['asunto'])) ? 'is-invalid' : '' ?>" name="subject" value="<?= htmlspecialchars($this->contact->subject ?? ''); ?>" required autocomplete="subject">
+                            <small class="form-error"><?= $this->error['subject'] ?? '' ?></small>
                         </div>
 
-                        <!-- campo subject -->
-                        <div class="mb-3 row">
-                            <label for="subject" class="col-md-4 col-form-label text-md-right">Asunto</label>
-                            <div class="col-md-6">
-                                <input id="name" type="text"
-                                    class="form-control <?= (isset($this->errores['asunto'])) ? 'is-invalid' : null ?>"
-                                    name="subject" value="<?= htmlspecialchars($this->contact->subject); ?>" required
-                                    autocomplete="subject" autofocus>
-                                <!-- control de errores -->
-                                <span class="form-text text-danger" role="alert">
-                                    <?= $this->error['subject'] ??= '' ?>
-                                </span>
-                            </div>
+                        <div class="form-group">
+                            <label for="message" class="custom-label">Mensaje</label>
+                            <textarea id="message" class="form-control <?= (isset($this->errores['message'])) ? 'is-invalid' : '' ?>" name="message" rows="5" required autocomplete="off"><?= htmlspecialchars($this->contact->message ?? ''); ?></textarea>
+                            <small class="form-error"><?= $this->error['message'] ?? '' ?></small>
                         </div>
 
-                        <!-- campo message -->
-                        <div class="mb-3 row">
-                            <label for="message" class="col-md-4 col-form-label text-md-right">Mensaje</label>
-                            <div class="col-md-6">
-                                <textarea id="message" type="text"
-                                    class="form-control <?= (isset($this->errores['message'])) ? 'is-invalid' : null ?>"
-                                    name="message" value="<?= htmlspecialchars($this->contact->message); ?>" required
-                                    autocomplete="message" autofocus></textarea>
-                                <!-- control de errores -->
-                                <span class="form-text text-danger" role="alert">
-                                    <?= $this->error['message'] ??= '' ?>
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- botones de acción -->
-                        <div class="mb-3 row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <a class="btn btn-secondary" href="<?= URL ?>index" role="button">Cancelar</a>
-                                <button type="reset" class="btn btn-secondary">Reset</button>
-                                <button type="submit" class="btn btn-primary">Enviar</button>
-                            </div>
+                        <div class="form-actions border-top-actions mt-4 pt-4">
+                            <a class="btn btn-light" href="<?= URL ?>index">Cancelar</a>
+                            <button type="submit" class="btn btn-dark fw-bold">
+                                <i class="bi bi-send me-2"></i> Enviar Mensaje
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-
 </div>
