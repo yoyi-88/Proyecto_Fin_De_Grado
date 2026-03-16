@@ -399,6 +399,8 @@ class Auth extends Controller
             // Configurar el email: Remitente (Sistema) -> Destinatario (Usuario)
             $mail->setFrom(SMTP_USER, 'Administración De Mi Casa a la Tuya');
             $mail->addAddress($email, $name);
+            $mail->isHTML(true);                                  
+            $mail->AltBody = strip_tags($message);
             $mail->Subject = $subject;
             $mail->Body = $message;
 
