@@ -1,31 +1,21 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary primary">
-    <div class="container-fluid">
-        <i class="bi bi-people-fill me-2"></i>
-        <a class="navbar-brand" href="<?= URL ?>user">Usuarios</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-sort-down me-1"></i> Ordenar por
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="<?= URL ?>user/new">Nuevo</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Ordenar por
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="<?= URL ?>user/order/1">Id</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>user/order/2">Nombre</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>user/order/3">Email</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>user/order/4">Rol</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <form class="d-flex" method="GET" action="<?= URL ?>user/search">
-                <input class="form-control me-2" type="search" placeholder="Buscar usuario..." aria-label="Search" name="term">
-                <button class="btn btn-outline-secondary" type="submit">Buscar</button>
-            </form>
-        </div>
+        <ul class="dropdown-menu shadow-sm border-0">
+            <li><a class="dropdown-item" href="<?= URL ?>user/order/1">ID</a></li>
+            <li><a class="dropdown-item" href="<?= URL ?>user/order/2">Nombre</a></li>
+            <li><a class="dropdown-item" href="<?= URL ?>user/order/3">Email</a></li>
+            <li><a class="dropdown-item" href="<?= URL ?>user/order/4">Rol</a></li>
+        </ul>
     </div>
-</nav>
+
+    <form class="d-flex" method="GET" action="<?= URL ?>user/search">
+        <div class="input-group input-group-sm shadow-sm">
+            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+            <input class="form-control border-start-0 ps-0" type="search" placeholder="Buscar usuario..." name="term">
+            <button class="btn btn-dark" type="submit">Buscar</button>
+        </div>
+    </form>
+</div>
