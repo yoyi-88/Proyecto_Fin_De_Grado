@@ -1,0 +1,12 @@
+// --- TAMAÑO DEL LOGOTIPO EN LA CABECERA ---
+.brand-logo {
+    height: 60px;       // El tamaño perfecto para las barras de Bootstrap (entre 40 y 50px)
+    width: auto;        // Mantiene la proporción para que no se achate
+    object-fit: contain; // Asegura que la imagen se vea nítida
+    transition: transform 0.3s ease; // Le damos una animación suave
+
+    // Pequeño efecto al pasar el ratón
+    &:hover {
+        transform: scale(1.05);
+    }
+}

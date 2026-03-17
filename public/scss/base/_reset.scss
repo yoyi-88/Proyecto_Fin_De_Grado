@@ -21,3 +21,19 @@ h1, h2, h3, h4, h5, h6, .catalog-title {
         font-size: 2.5rem; // Tamaño display-6
     }
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; // El cuerpo ocupa siempre el 100% de la altura de la pantalla
+    padding-top: 59px; // Espacio para que la barra de navegación fija no tape el contenido
+}
+ 
+main {
+    flex: 1; // Obliga al contenido central a expandirse y empujar el footer hacia abajo
+}
+
+// Ajustes de la barra de navegación
+.navbar-nav .nav-link {
+    white-space: nowrap; // Prohíbe terminantemente que el texto se parta en dos líneas
+} 

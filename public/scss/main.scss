@@ -18,26 +18,3 @@
 
 // Página principal
 @import 'pages/home';
-
-body {
-    font-family: 'Lato', sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    padding-top: 56px;
-    /* Ajuste fino para la navbar */
-    background-color: #f8f9fa;
-    /* Fondo gris muy suave para toda la web */
-}
-
-h1,
-h2,
-h3,
-h4,
-.navbar-brand {
-    font-family: 'Playfair Display', serif;
-}
-
-main {
-    flex: 1;
-}

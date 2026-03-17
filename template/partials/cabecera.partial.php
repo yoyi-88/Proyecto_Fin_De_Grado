@@ -1,10 +1,6 @@
-<header>
-    <hgroup>
-        <div class="jumbotron jumbotron-fluid bg-light py-4 mb-4 shadow-sm">
-            <div class="container">
-                <h4 class="display-6">De Mi Casa a la Tuya</h4>
-                <p class="lead">Experiencias gastronómicas exclusivas</p>
-            </div>
-        </div>
-    </hgroup>
+<header class="page-header bg-light py-5 mb-4 border-bottom">
+    <div class="container text-center">
+        <h2 class="display-6 fw-bold font-serif text-dark mb-2">De Mi Casa a la Tuya</h2>
+        <p class="lead text-muted mb-0">Experiencias gastronómicas exclusivas</p>
+    </div>
 </header>
