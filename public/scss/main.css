@@ -12275,7 +12275,7 @@ main {
 }
 
 .brand-logo {
-  height: 60px;
+  height: 45px;
   width: auto;
   -o-object-fit: contain;
      object-fit: contain;
@@ -12285,6 +12285,56 @@ main {
   transform: scale(1.05);
 }
 
+.navbar {
+  background-color: rgba(17, 35, 49, 0.95) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.navbar .nav-link {
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  position: relative;
+  transition: color 0.3s ease;
+}
+.navbar .nav-link:not(.text-warning)::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: #E2D0C1;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+.navbar .nav-link:not(.text-warning):hover::after, .navbar .nav-link.active:not(.text-warning)::after {
+  width: 80%;
+}
+.navbar .dropdown-menu {
+  border-radius: 1.25rem;
+  animation: fadeIn 0.2s ease-in-out;
+}
+.navbar .dropdown-menu .dropdown-item {
+  transition: all 0.2s;
+}
+.navbar .dropdown-menu .dropdown-item:hover {
+  background-color: rgba(15, 76, 117, 0.05);
+  color: #0F4C75;
+  padding-left: 1.5rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .hero-section {
   background-image: linear-gradient(rgba(17, 35, 49, 0.7), rgba(17, 35, 49, 0.7)), url("../images/cocina.jpg");
   background-size: cover;
