@@ -51,23 +51,31 @@ class dashboardModel extends Model {
             $conn = $this->db->connect();
             
             // Citas pendientes
-            $stmt = $conn->query("SELECT COUNT(*) as total FROM citas WHERE estado = 'Pendiente'");
-            $pendientes = $stmt->fetch(PDO::FETCH_OBJ)->total;
+            $stmt = $conn->query("SELECT COUNT(id) as total FROM citas WHERE estado = 'Pendiente'");
+            $pendientes = $stmt ? $stmt->fetch(PDO::FETCH_OBJ)->total : 0;
 
-            // Total Clientes
-            $stmt = $conn->query("SELECT COUNT(*) as total FROM users WHERE role_id != 1");
-            $clientes = $stmt->fetch(PDO::FETCH_OBJ)->total;
+            // Total Clientes (Corregido con INNER JOIN hacia roles_users)
+            $sqlUsuarios = "
+                SELECT COUNT(u.id) as total 
+                FROM users u 
+                INNER JOIN roles_users ru ON u.id = ru.user_id 
+                WHERE ru.role_id != 1
+            ";
+            $stmt = $conn->query($sqlUsuarios);
+            $clientes = $stmt ? $stmt->fetch(PDO::FETCH_OBJ)->total : 0;
 
             // Total Platos en carta
-            $stmt = $conn->query("SELECT COUNT(*) as total FROM menus");
-            $platos = $stmt->fetch(PDO::FETCH_OBJ)->total;
+            $stmt = $conn->query("SELECT COUNT(id) as total FROM menus");
+            $platos = $stmt ? $stmt->fetch(PDO::FETCH_OBJ)->total : 0;
 
             return [
                 'pendientes' => $pendientes,
-                'clientes' => $clientes,
-                'platos' => $platos
+                'clientes'   => $clientes,
+                'platos'     => $platos
             ];
+            
         } catch (PDOException $e) {
+            // Si algo falla, devolvemos 0 por defecto de forma segura
             return ['pendientes' => 0, 'clientes' => 0, 'platos' => 0];
         }
     }

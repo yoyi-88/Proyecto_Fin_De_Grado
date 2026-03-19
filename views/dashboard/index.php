@@ -81,10 +81,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Mapeo de colores corporativos según el estado para que coincida con tu diseño
     const colorMap = {
-        'Pendiente': '#ffc107',  // Warning
-        'Confirmada': '#198754', // Success
-        'Cancelada': '#dc3545',  // Danger
-        'Finalizada': '#212529'  // Dark
+        'Pendiente': '#F09A54',  // Naranja tostado (Warning)
+        'Confirmada': '#7A8B70', // Verde alga (Success)
+        'Cancelada': '#A83F39',  // Rojo guinda (Danger)
+        'Finalizada': '#112331'  // Azul oscuro marino (Dark)
     };
     
     // Asignamos colores a cada etiqueta dinámicamente
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function() {
             datasets: [{
                 label: 'Ingresos (€)',
                 data: dataIngresos,
-                backgroundColor: '#D4AF37', // Tu color $primary dorado
+                backgroundColor: '#0F4C75', // Tu color $primary dorado
                 borderRadius: 6,            // Bordes superiores redondeados
                 borderSkipped: false,
                 barPercentage: 0.6          // Barras más estilizadas

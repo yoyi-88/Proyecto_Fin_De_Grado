@@ -4,8 +4,5 @@
     <small class="d-block mb-3 opacity-75">
         &copy; <?= date('Y') ?> Experiencias Gastronómicas Privadas. Todos los derechos reservados.
     </small>
-    <small class="d-block text-secondary">
-        Desarrollo Web en Entorno Servidor &middot; Proyecto Fin de Grado
-    </small>
   </div>
 </footer>
