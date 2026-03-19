@@ -53,7 +53,7 @@
 
             <div class="col-md-7 p-5">
                 <span class="badge bg-light text-primary border border-primary mb-3 px-3 py-2 letter-spacing-1">SOBRE MÍ</span>
-                <h2 class="chef-name mb-4">Pasión por la gastronomía, directamente en tu mesa.</h2>
+                <h2 class="chef-name mb-4">Rafael Gómez Albela</h2>
                 
                 <p class="text-muted lead fs-6 mb-4">
                     Tras haber trabajado en numerosas cocinas de diferentes estilos, decidi dar el salto a este proyecto para que puedas degustar la alta gastronomía desde la comodidad de tu casa.

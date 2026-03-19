@@ -12341,6 +12341,29 @@ main {
     transform: translateY(0);
   }
 }
+.footer {
+  border-top: 1px solid rgba(209, 160, 84, 0.2);
+  position: relative;
+}
+.footer .font-serif {
+  font-family: "Playfair Display", serif;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+.footer small, .footer .small {
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  font-weight: 300;
+}
+.footer a {
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer a:hover {
+  color: #D1A054;
+}
+
 .hero-section {
   background-image: linear-gradient(rgba(17, 35, 49, 0.7), rgba(17, 35, 49, 0.7)), url("../images/cocina.jpg");
   background-size: cover;
@@ -12353,7 +12376,7 @@ main {
   color: white;
 }
 .hero-section .hero-title {
-  font-family: "Lato", sans-serif;
+  font-family: "Playfair Display", serif;
   font-size: clamp(3rem, 5vw, 5rem);
   font-weight: 700;
   margin-bottom: 1.5rem;
@@ -12387,7 +12410,7 @@ main {
   transition: transform 0.3s ease;
 }
 .feature-box .feature-title {
-  font-family: "Lato", sans-serif;
+  font-family: "Playfair Display", serif;
   font-weight: 700;
   font-size: 1.5rem;
   color: #112331;
@@ -12409,7 +12432,7 @@ main {
 }
 
 .chef-name {
-  font-family: "Lato", sans-serif;
+  font-family: "Playfair Display", serif;
   font-size: 2.25rem;
   font-weight: 700;
   color: #112331;

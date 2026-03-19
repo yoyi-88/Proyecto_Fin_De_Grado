@@ -1,0 +1,34 @@
+// ==========================================
+// PIE DE PÁGINA (Footer)
+// ==========================================
+
+.footer {
+    // Le añadimos un borde superior muy fino y elegante usando tu color arena/dorado
+    border-top: 1px solid rgba($info, 0.2); 
+    position: relative;
+    
+    // Aseguramos que la clase de la fuente elegante funcione perfectamente
+    .font-serif {
+        font-family: $font-family-serif;
+        letter-spacing: 1px; // Da más aire a las letras, aspecto de Alta Cocina
+        margin-bottom: 0.5rem;
+    }
+
+    // Estilizamos el texto pequeño del copyright
+    small {
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        font-weight: 300;
+    }
+    
+    // Dejamos preparado el estilo por si en el futuro añades enlaces (Aviso Legal, Redes Sociales...)
+    a {
+        color: rgba(255, 255, 255, 0.75);
+        text-decoration: none;
+        transition: color 0.3s ease;
+        
+        &:hover {
+            color: $info; // Se iluminará con tu tono mostaza atardecer al pasar el ratón
+        }
+    }
+}
