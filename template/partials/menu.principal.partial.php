@@ -1,4 +1,4 @@
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark shadow-sm">
+<nav class="navbar sticky-top navbar-expand-xl navbar-dark bg-dark shadow-sm">
   <div class="container"> 
     
     <a class="navbar-brand fw-bold fs-4 d-flex align-items-center" href="<?= URL ?>main">
@@ -12,7 +12,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarScroll">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-2 ms-lg-4">
+      <ul class="navbar-nav me-auto mb-2 mb-xl-0 gap-2 ms-xl-4">
         <li class="nav-item">
           <a class="nav-link <?= ($this->view == 'menu/main/index') ? 'active fw-bold' : '' ?>" href="<?= URL ?>menu">Nuestra Carta</a>
         </li>
@@ -23,7 +23,7 @@
           </li>
 
           <?php if (in_array($_SESSION['role_id'], [1])): ?>
-            <li class="nav-item ms-lg-3">
+            <li class="nav-item ms-xl-3">
               <a class="nav-link text-warning" href="<?= URL ?>user"><i class="bi bi-people me-1"></i>Usuarios</a>
             </li>
             <li class="nav-item">
@@ -37,7 +37,7 @@
         </li>
       </ul>
 
-      <div class="d-flex align-items-center mt-3 mt-lg-0">
+      <div class="d-flex align-items-center mt-3 mt-xl-0 ms-xl-5">
         <ul class="navbar-nav ms-auto gap-2 w-100">
           <?php if (isset($_SESSION['user_id'])): ?>
             <li class="nav-item dropdown">
@@ -51,7 +51,7 @@
               </ul>
             </li>
           <?php else: ?>
-            <li class="nav-item"><a href="<?= URL ?>auth/login" class="btn btn-outline-light px-4 w-100 mb-2 mb-lg-0">Entrar</a></li>
+            <li class="nav-item"><a href="<?= URL ?>auth/login" class="btn btn-outline-light px-4 w-100 mb-2 mb-xl-0">Entrar</a></li>
             <li class="nav-item"><a href="<?= URL ?>auth/register" class="btn btn-primary px-4 fw-bold w-100">Registrarse</a></li>
           <?php endif; ?>
         </ul>

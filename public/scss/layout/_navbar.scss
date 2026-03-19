@@ -12,56 +12,73 @@
 
 // --- ESTILOS EXTRA PARA LA BARRA DE NAVEGACIÓN ---
 .navbar {
-    // Añadimos un poco de desenfoque al fondo para que parezca cristal (efecto Apple)
     background-color: rgba($dark, 0.95) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
 
-    .nav-link {
-        font-size: 0.95rem;
-        letter-spacing: 0.5px;
-        position: relative;
-        transition: color 0.3s ease;
+    // --- ESTILOS EXTRA PARA LA BARRA DE NAVEGACIÓN ---
+    .navbar {
+        background-color: rgba($dark, 0.95) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
 
-        // Efecto de línea animada al pasar el ratón por los enlaces normales (no los de warning)
-        &:not(.text-warning)::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            background-color: $secondary;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
+        .nav-link {
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            position: relative;
+            transition: color 0.3s ease;
+
+            // EFECTO DE LÍNEA: Solo en escritorio y excluyendo el botón del usuario (dropdown-toggle)
+            @media (min-width: 1200px) {
+                &:not(.text-warning):not(.dropdown-toggle)::after {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 2px;
+                    bottom: 0;
+                    left: 50%;
+                    background-color: $secondary;
+                    transition: all 0.3s ease;
+                    transform: translateX(-50%);
+                }
+
+                &:not(.text-warning):not(.dropdown-toggle):hover::after,
+                &.active:not(.text-warning):not(.dropdown-toggle)::after {
+                    width: 80%;
+                }
+            }
         }
 
-        &:not(.text-warning):hover::after,
-        &.active:not(.text-warning)::after {
-            width: 80%;
-        }
-    }
+        // Estilo especial para los botones del dropdown
+        .dropdown-menu {
+            border-radius: $border-radius-lg;
+            animation: fadeIn 0.2s ease-in-out;
 
-    // Estilo especial para los botones del dropdown
-    .dropdown-menu {
-        border-radius: $border-radius-lg;
-        animation: fadeIn 0.2s ease-in-out;
-        
-        .dropdown-item {
-            transition: all 0.2s;
-            &:hover {
-                background-color: rgba($primary, 0.05);
-                color: $primary;
-                padding-left: 1.5rem; // Pequeño desplazamiento animado
+            .dropdown-item {
+                transition: all 0.2s;
+
+                &:hover {
+                    background-color: rgba($primary, 0.05);
+                    color: $primary;
+                    padding-left: 1.5rem;
+                }
             }
         }
     }
+
 }
 
 // Animación suave para cuando se abre el menú desplegable
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
