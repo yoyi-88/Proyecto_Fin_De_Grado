@@ -6,6 +6,7 @@
     border-radius: $border-radius;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 20px;
 
     // Efecto interactivo al pasar el ratón
     &:hover {
@@ -30,16 +31,16 @@
         position: absolute;
         top: 1rem;
         right: 1rem;
-        background-color: $dark;
-        color: white;
-        font-size: 1rem;
+        font-size: 0.95rem;
         padding: 0.5rem 1rem;
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.15);
+        letter-spacing: 0.5px;
+        z-index: 2; // Asegura que esté por encima de la imagen
     }
 
     &-title {
         color: $dark;
         margin-bottom: 1rem;
+        font-family: $font-family-serif;
     }
 
     &-desc {
@@ -51,19 +52,10 @@
         text-overflow: ellipsis;
         white-space: pre-line;
         
-        // Un poco de margen inferior para que no pegue con el botón
-        margin-bottom: 1.5rem; 
-        min-height: 4.5em; // reserva el espacio para que las tarjetas no bailen
+        margin-bottom: 0;
     }
 
-    // Botonera de abajo
-    &-actions {
-        background-color: transparent;
-        border-top: none;
-        display: flex;
-        justify-content: space-between;
-        padding-bottom: 1rem;
-    }
+
 }
 
 // --- WIDGETS DEL DASHBOARD ---

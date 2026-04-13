@@ -19,23 +19,23 @@
     <div class="row text-center g-4">
         <div class="col-md-4">
             <div class="feature-box">
-                <i class="bi bi-calendar-check feature-icon" data-aos="fade-right" data-aos-delay="300"></i>
-                <h3 class="feature-title" data-aos="fade-right" data-aos-delay="300">Reserva Fácil</h3>
-                <p class="text-muted" data-aos="fade-right" data-aos-delay="300">Elige el día y la hora. Nosotros nos encargamos de la compra, la preparación y la limpieza.</p>
+                <i class="bi bi-calendar-check feature-icon" data-aos="fade-right" data-aos-delay="200"></i>
+                <h3 class="feature-title" data-aos="fade-right" data-aos-delay="200">Reserva Fácil</h3>
+                <p class="text-muted" data-aos="fade-right" data-aos-delay="200">Elige el día y la hora. Nosotros nos encargamos de la compra, la preparación y la limpieza.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="feature-box">
-                <i class="bi bi-stars feature-icon" data-aos="zoom-in" data-aos-delay="300"></i>
-                <h3 class="feature-title" data-aos="zoom-in" data-aos-delay="300">Calidad Premium</h3>
-                <p class="text-muted" data-aos="zoom-in" data-aos-delay="300">Ingredientes seleccionados personalmente cada mañana en el mercado local para garantizar su frescura.</p>
+                <i class="bi bi-stars feature-icon" data-aos="zoom-in" data-aos-delay="200"></i>
+                <h3 class="feature-title" data-aos="zoom-in" data-aos-delay="200">Calidad Premium</h3>
+                <p class="text-muted" data-aos="zoom-in" data-aos-delay="200">Ingredientes seleccionados personalmente cada mañana en el mercado local para garantizar su frescura.</p>
             </div>
         </div>
         <div class="col-md-4">
             <div class="feature-box">
-                <i class="bi bi-heart feature-icon" data-aos="fade-left" data-aos-delay="300"></i>
-                <h3 class="feature-title" data-aos="fade-left" data-aos-delay="300">Menú Personalizado</h3>
-                <p class="text-muted" data-aos="fade-left" data-aos-delay="300">Adaptamos cada plato a las alergias, intolerancias y preferencias gastronómicas de tus invitados.</p>
+                <i class="bi bi-heart feature-icon" data-aos="fade-left" data-aos-delay="200"></i>
+                <h3 class="feature-title" data-aos="fade-left" data-aos-delay="200">Menú Personalizado</h3>
+                <p class="text-muted" data-aos="fade-left" data-aos-delay="200">Adaptamos cada plato a las alergias, intolerancias y preferencias gastronómicas de tus invitados.</p>
             </div>
         </div>
     </div>
