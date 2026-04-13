@@ -279,6 +279,9 @@ class Account extends Controller
             $this->view->error = 'Formulario con errores, revísalos por favor';
         }
 
+        // Obtenemos los detalles completos del usuario
+        $this->view->account = $this->model->getUserId($_SESSION['user_id']);
+
         // Creo la propiedad title de la vista
         $this->view->title = "Cambiar password " . $_SESSION['user_name'];
 

@@ -1,34 +1,45 @@
-<div class="container form-page">
+<div class="container form-page py-5">
     <?php require_once("template/partials/mensaje.partial.php") ?>
     <?php require_once("template/partials/error.partial.php") ?>
 
-    <div class="form-card shadow-sm">
-        <div class="form-card-header bg-dark text-white flex-column align-items-stretch gap-3 pb-0">
-            <h5 class="form-card-title"><i class="bi bi-person-badge"></i> <?= $this->title ?></h5>
-            <?php require_once("views/account/partials/menu.partial.php") ?>
-        </div>
-        
-        <div class="detail-body">
-            <div class="detail-section">
-                <label class="custom-label">Nombre Registrado</label>
-                <p class="detail-text main-title"><?= htmlspecialchars($this->account->name); ?></p>
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="row g-0">
+            
+            <div class="col-md-4 col-lg-3">
+                <?php require_once("views/account/partials/menu.partial.php") ?>
             </div>
 
-            <div class="detail-section">
-                <label class="custom-label">Correo Electrónico</label>
-                <p class="detail-text"><?= htmlspecialchars($this->account->email); ?></p>
+            <div class="col-md-8 col-lg-9">
+                <div class="p-5">
+                    <h4 class="mb-4 text-dark font-serif fw-bold">Información de la Cuenta</h4>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold letter-spacing-1 mb-1">Nombre Registrado</label>
+                            <p class="fs-5 text-dark mb-0"><?= htmlspecialchars($this->account->name); ?></p>
+                        </div>
+                        
+                        <div class="col-sm-6">
+                            <label class="text-muted small text-uppercase fw-bold letter-spacing-1 mb-1">Correo Electrónico</label>
+                            <p class="fs-5 text-dark mb-0"><?= htmlspecialchars($this->account->email); ?></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-5 pb-4 border-bottom">
+                        <label class="text-muted small text-uppercase fw-bold letter-spacing-1 mb-1">Estado de la cuenta</label>
+                        <div>
+                            <span class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill">
+                                Activa - <?= htmlspecialchars($_SESSION['role_name']); ?>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <a class="btn btn-outline-primary px-4" href="<?= URL ?>main">Volver al Inicio</a>
+                    </div>
+                </div>
             </div>
 
-            <div class="detail-section">
-                <label class="custom-label">Rol del Usuario</label>
-                <p class="detail-text">
-                    <span class="badge bg-warning text-dark fs-6"><?= htmlspecialchars($_SESSION['role_name']); ?></span>
-                </p>
-            </div>
-
-            <div class="form-actions mt-4">
-                <a class="btn btn-light" href="<?= URL ?>main">Volver al Inicio</a>
-            </div>
         </div>
     </div>
 </div>

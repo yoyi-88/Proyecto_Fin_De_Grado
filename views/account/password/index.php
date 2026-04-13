@@ -1,40 +1,50 @@
-<div class="container form-page">
+<div class="container form-page py-5">
     <?php require_once("template/partials/mensaje.partial.php") ?>
     <?php require_once("template/partials/error.partial.php") ?>
 
-    <div class="form-card shadow-sm">
-        <div class="form-card-header bg-dark text-white flex-column align-items-stretch gap-3 pb-0">
-            <h5 class="form-card-title"><i class="bi bi-shield-lock"></i> <?= $this->title ?></h5>
-            <?php require_once("views/account/partials/menu.partial.php") ?>
-        </div>
-        
-        <div class="form-card-body">
-            <form action="<?= URL ?>account/update_password" method="POST">
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="row g-0">
+            
+            <div class="col-md-4 col-lg-3">
+                <?php require_once("views/account/partials/menu.partial.php") ?>
+            </div>
 
-                <div class="form-group">
-                    <label for="password" class="custom-label">Contraseña Actual</label>
-                    <input id="password" type="password" class="form-control <?= (isset($this->errors['password'])) ? 'is-invalid' : '' ?>" name="password" required autofocus>
-                    <small class="form-error"><?= $this->errors['password'] ?? '' ?></small>
-                </div>
+            <div class="col-md-8 col-lg-9">
+                <div class="p-5">
+                    <h4 class="mb-4 text-dark font-serif fw-bold">Seguridad y Contraseña</h4>
+                    <p class="text-muted mb-4">Asegúrate de usar una contraseña que sea difícil de adivinar para mantener tu cuenta segura.</p>
 
-                <div class="form-group">
-                    <label for="new_password" class="custom-label">Nueva Contraseña</label>
-                    <input id="new_password" type="password" class="form-control <?= (isset($this->errors['new_password'])) ? 'is-invalid' : '' ?>" name="new_password" required>
-                    <small class="form-error"><?= $this->errors['new_password'] ?? '' ?></small>
-                </div>
+                    <form action="<?= URL ?>account/update_password" method="POST">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-                <div class="form-group">
-                    <label for="confirm_password" class="custom-label">Confirmar Nueva Contraseña</label>
-                    <input id="confirm_password" type="password" class="form-control <?= (isset($this->errors['confirm_password'])) ? 'is-invalid' : '' ?>" name="confirm_password" required>
-                    <small class="form-error"><?= $this->errors['confirm_password'] ?? '' ?></small>
-                </div>
+                        <div class="mb-4 form-group">
+                            <label for="password" class="form-label text-muted small fw-bold text-uppercase letter-spacing-1">Contraseña Actual</label>
+                            <input id="password" type="password" class="form-control form-control-lg bg-light border-0 <?= (isset($this->errors['password'])) ? 'is-invalid' : '' ?>" name="password" required autofocus>
+                            <small class="text-danger"><?= $this->errors['password'] ?? '' ?></small>
+                        </div>
 
-                <div class="form-actions border-top-actions">
-                    <button type="reset" class="btn btn-light">Limpiar</button>
-                    <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6 form-group">
+                                <label for="new_password" class="form-label text-muted small fw-bold text-uppercase letter-spacing-1">Nueva Contraseña</label>
+                                <input id="new_password" type="password" class="form-control form-control-lg bg-light border-0 <?= (isset($this->errors['new_password'])) ? 'is-invalid' : '' ?>" name="new_password" required>
+                                <small class="text-danger"><?= $this->errors['new_password'] ?? '' ?></small>
+                            </div>
+
+                            <div class="col-md-6 form-group">
+                                <label for="confirm_password" class="form-label text-muted small fw-bold text-uppercase letter-spacing-1">Confirmar Contraseña</label>
+                                <input id="confirm_password" type="password" class="form-control form-control-lg bg-light border-0 <?= (isset($this->errors['confirm_password'])) ? 'is-invalid' : '' ?>" name="confirm_password" required>
+                                <small class="text-danger"><?= $this->errors['confirm_password'] ?? '' ?></small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 pt-3 border-top">
+                            <button type="submit" class="btn btn-primary px-4 fw-bold">Actualizar Contraseña</button>
+                            <button type="reset" class="btn btn-link text-muted text-decoration-none">Limpiar campos</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+
         </div>
     </div>
 </div>
