@@ -1,0 +1,32 @@
+// --- ANIMACIÓN DE PULSO (Capa Independiente) ---
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.7; }
+  50% { opacity: 0.3; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+.callToAction {
+    position: relative;
+    z-index: 1;
+
+    // Creamos un anillo detrás del botón
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: inherit; // Copia el radio del botón (0.75rem)
+        background-color: $info; // Tu color dorado/mostaza
+        z-index: -1;            // Se coloca detrás
+        animation: pulse-ring 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    &:hover {
+        transform: translateY(-3px);
+        &::before {
+            animation: none; // Para el pulso al posar el ratón
+        }
+    }
+}

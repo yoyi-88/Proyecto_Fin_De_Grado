@@ -9,7 +9,7 @@
 
     // Efecto interactivo al pasar el ratón
     &:hover {
-        transform: translateY(-50px);
+        transform: translateY(-5px);
         box-shadow: $box-shadow;
     }
 
@@ -44,6 +44,15 @@
 
     &-desc {
         color: #6c757d; // Equivalente a text-muted
+        display: -webkit-box;
+        -webkit-line-clamp: 3; // <-- ¡Aquí decides el máximo de líneas! (3 es lo ideal)
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+        // Un poco de margen inferior para que no pegue con el botón
+        margin-bottom: 1.5rem; 
+        min-height: 4.5em; // reserva el espacio para que las tarjetas no bailen
     }
 
     // Botonera de abajo
