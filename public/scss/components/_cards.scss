@@ -49,6 +49,7 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: pre-line;
         
         // Un poco de margen inferior para que no pegue con el botón
         margin-bottom: 1.5rem; 

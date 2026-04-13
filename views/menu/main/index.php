@@ -32,8 +32,8 @@
                     </div>
 
                     <div class="card-body">
-                        <h4 class="menu-card-title"><?= $menu->nombre ?></h4>
-                        <p class="menu-card-desc"><?= $menu->descripcion ?></p>
+                        <h4 class="menu-card-title"><?= htmlspecialchars($menu->nombre) ?></h4>
+                        <p class="menu-card-desc"><?= htmlspecialchars(html_entity_decode($menu->descripcion, ENT_QUOTES, 'UTF-8')) ?></p>
                     </div>
                     
                     <div class="card-footer menu-card-actions">

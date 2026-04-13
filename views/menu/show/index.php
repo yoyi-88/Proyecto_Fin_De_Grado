@@ -17,7 +17,7 @@
 
             <div class="detail-section">
                 <label class="custom-label">Descripción / Ingredientes</label>
-                <p class="detail-text"><?= nl2br(htmlspecialchars($this->menu->descripcion)) ?></p>
+                <p class="detail-text"><?=nl2br(htmlspecialchars(html_entity_decode($this->menu->descripcion, ENT_QUOTES, 'UTF-8'))) ?></p>
             </div>
 
             <div class="form-actions mt-5">
