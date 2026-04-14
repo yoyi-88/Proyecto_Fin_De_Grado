@@ -12,7 +12,7 @@ class pdf_factura extends FPDF
         // Título Empresa
         $this->Cell(0, 10, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'De Mi Casa a la Tuya - Chef Privado'), 0, 1, 'C');
         $this->SetFont('Arial', '', 10);
-        $this->Cell(0, 5, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'CIF: 12345678Z | C/ Gastronomía, 12, 28000 Madrid'), 0, 1, 'C');
+        $this->Cell(0, 5, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'CIF: 12345678Z | C/ Los Chichos, 8, 88000 Manzanita'), 0, 1, 'C');
         $this->Ln(10);
     }
 
@@ -37,7 +37,7 @@ class pdf_factura extends FPDF
 
         $this->SetFont('Arial', '', 11);
         $this->Cell(100, 6, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Nombre: ' . $cita->cliente_nombre), 0, 0);
-        $this->Cell(90, 6, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Factura Nº: FCT-' . date('Y') . '-' . str_pad($cita->id, 4, '0', STR_PAD_LEFT)), 0, 1);
+        $this->Cell(90, 6, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Factura Nº: TFG-' . date('Y') . '-' . str_pad($cita->id, 4, '0', STR_PAD_LEFT)), 0, 1);
         
         $this->Cell(100, 6, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Email: ' . $cita->cliente_email), 0, 0);
         $this->Cell(90, 6, iconv('UTF-8', 'ISO-8859-1//IGNORE', 'Fecha de Emisión: ' . date('d/m/Y')), 0, 1);
