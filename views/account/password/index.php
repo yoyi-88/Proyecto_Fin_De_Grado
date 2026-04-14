@@ -1,11 +1,11 @@
-<div class="container form-page py-5">
+<div class="container py-5">
     <?php require_once("template/partials/mensaje.partial.php") ?>
     <?php require_once("template/partials/error.partial.php") ?>
 
     <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
         <div class="row g-0">
             
-            <div class="col-md-4 col-lg-3">
+            <div class="col-md-4 col-lg-3 bg-light border-end">
                 <?php require_once("views/account/partials/menu.partial.php") ?>
             </div>
 

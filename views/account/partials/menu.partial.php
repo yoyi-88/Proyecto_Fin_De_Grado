@@ -13,7 +13,7 @@
     $inicial = strtoupper(substr($nombreUsuario, 0, 1));
 ?>
 
-<div class="account-sidebar p-4 bg-light border-end h-100">
+<div class="p-4 h-200">
     <div class="text-center mb-4 pb-3 border-bottom">
         <div class="avatar-circle bg-primary text-white mx-auto mb-2 d-flex align-items-center justify-content-center fw-bold fs-3" style="width: 60px; height: 60px; border-radius: 50%;">
             <?= $inicial ?>
