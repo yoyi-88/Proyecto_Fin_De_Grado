@@ -38,7 +38,7 @@ class Menu extends Controller
             unset($_SESSION['error']);
         }
 
-        $this->view->title = "Carta de Menús";
+        $this->view->title = "Menús";
         $this->view->menus = $this->model->get();
 
         $this->view->render('menu/main/index');
