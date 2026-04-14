@@ -1,0 +1,23 @@
+.empty-state-container {
+    background-color: #fff;
+    padding: 5rem 2rem;
+    border: 1px dashed #dee2e6; // Borde punteado para dar sensación de "hueco"
+    transition: all 0.3s ease;
+
+    .empty-state-icon {
+        i {
+            display: inline-block;
+            // Animación sutil para que el icono se mueva un poquito
+            animation: float 4s ease-in-out infinite;
+        }
+    }
+
+    h3 {
+        font-family: $font-family-serif;
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
