@@ -7,9 +7,6 @@
                 </div>
                 
                 <div class="form-card-body">
-                    <?php if(isset($_SESSION['error'])): ?>
-                        <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
-                    <?php endif; ?>
 
                     <form action="<?= URL ?>auth/update_password" method="POST">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

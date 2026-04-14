@@ -6,13 +6,6 @@
                 </div>
                 
                 <div class="form-card-body">
-                    <?php if (isset($this->mensaje)): ?>
-                        <div class="alert alert-success"><?= $this->mensaje ?></div>
-                    <?php endif; ?>
-                    
-                    <?php if (isset($this->error)): ?>
-                        <div class="alert alert-danger"><?= $this->error ?></div>
-                    <?php endif; ?>
 
                     <form method="POST" action="<?= URL ?>auth/validate_login">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">

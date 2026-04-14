@@ -2,9 +2,6 @@
     <div class="row justify-content-center">
         <div class="col-md-7 col-lg-6">
             
-            <?php require_once("template/partials/mensaje.partial.php") ?>
-            <?php require_once("template/partials/error.partial.php") ?>
-            
             <div class="form-card shadow-sm border border-warning">
                 <div class="form-card-header bg-warning text-dark">
                     <h5 class="form-card-title"><i class="bi bi-gear"></i> Gestionar Reserva #<?= $this->cita->id ?></h5>

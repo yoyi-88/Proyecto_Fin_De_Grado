@@ -10,9 +10,6 @@
                 </div>
                 
                 <div class="form-card-body">
-                    <?php if (isset($this->error)): ?>
-                        <div class="alert alert-danger"><?= $this->error ?></div>
-                    <?php endif; ?>
 
                     <form action="<?= URL ?>citas/create" method="POST">
                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

@@ -5,13 +5,6 @@
         </a>
     </div>
 
-    <?php if(isset($this->mensaje)): ?>
-        <div class="alert alert-success alert-dismissible fade show">
-            <?= $this->mensaje ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    <?php endif; ?>
-
     <div class="card form-card shadow-sm border-0 mt-4">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">

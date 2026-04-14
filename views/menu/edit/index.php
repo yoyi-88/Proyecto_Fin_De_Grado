@@ -5,9 +5,6 @@
         </div>
         
         <div class="form-card-body">
-            <?php if(isset($this->error)): ?>
-                <div class="alert alert-danger"><?= $this->error ?></div>
-            <?php endif; ?>
 
             <form action="<?= URL ?>menu/update/<?= $this->id ?>" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

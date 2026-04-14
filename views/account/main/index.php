@@ -1,6 +1,4 @@
 <div class="container-fluid py-5 px-md-5">
-    <?php require_once("template/partials/mensaje.partial.php") ?>
-    <?php require_once("template/partials/error.partial.php") ?>
 
     <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
         <div class="row g-0">

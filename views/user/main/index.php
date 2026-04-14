@@ -7,9 +7,6 @@
         </a>
     </div>
 
-    <?php require_once("template/partials/mensaje.partial.php") ?>
-    <?php require_once("template/partials/error.partial.php") ?>
-
     <div class="card form-card shadow-sm border-0 mt-4">
         
         <div class="p-4 pb-0">

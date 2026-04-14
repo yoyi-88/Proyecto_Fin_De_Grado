@@ -1,9 +1,6 @@
 <div class="container form-page">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-5">
-            
-            <?php require_once("template/partials/mensaje.partial.php") ?>
-            <?php require_once("template/partials/error.partial.php") ?>
 
             <div class="detail-card shadow-sm border-0">
                 <div class="detail-header bg-dark text-white">

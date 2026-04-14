@@ -5,8 +5,6 @@
         </div>
         
         <div class="form-card-body">
-            <?php require_once("template/partials/mensaje.partial.php") ?>
-            <?php require_once("template/partials/error.partial.php") ?>
             
             <?php if (isset($this->error)): ?>
                 <div class="alert alert-danger"><?= $this->error ?></div>

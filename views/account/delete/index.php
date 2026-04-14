@@ -1,6 +1,4 @@
 <div class="container form-page">
-    <?php require_once("template/partials/mensaje.partial.php") ?>
-    <?php require_once("template/partials/error.partial.php") ?>
 
     <div class="form-card shadow-sm border border-danger">
         <div class="form-card-header bg-danger text-white flex-column align-items-stretch gap-3 pb-0">
