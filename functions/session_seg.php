@@ -16,8 +16,10 @@
 		session_set_cookie_params($cookieParams["lifetime"],$cookieParams["path"], $cookieParams["domain"], $secure,$httponly);
 		
 		session_name($session_name);
-		session_start();            
-		session_regenerate_id();
+		         
+		if (session_status() === PHP_SESSION_NONE) {
+			session_start();
+		}
 	}
 
 	function sec_session_destroy() {

@@ -7,7 +7,7 @@
 
     Métodos:
 
-        
+
 */
 
 class accountModel extends Model
@@ -27,7 +27,7 @@ class accountModel extends Model
         try {
 
             // sentencia sql
-            $sql = "SELECT name, email, password FROM users WHERE id = :id LIMIT 1"; 
+            $sql = "SELECT name, email, password FROM users WHERE id = :id LIMIT 1";
 
             // conectamos con la base de datos
             $fp = $this->db->connect();
@@ -49,8 +49,8 @@ class accountModel extends Model
 
         } catch (PDOException $e) {
 
-           // Manejo del error
-            $this->handleError($e); 
+            // Manejo del error
+            $this->handleError($e);
         }
     }
 
@@ -64,7 +64,7 @@ class accountModel extends Model
 
             - name: nombre del usuario
             - email: email del usuario
-            
+
     */
     public function update($name, $email, $id)
     {
@@ -94,7 +94,7 @@ class accountModel extends Model
         } catch (PDOException $e) {
 
             // error base de datos
-            $this->handleError($e); 
+            $this->handleError($e);
         }
     }
 
@@ -112,7 +112,7 @@ class accountModel extends Model
         try {
 
             // sentencia sql
-            $sql = "SELECT * FROM users WHERE name = :name"; 
+            $sql = "SELECT * FROM users WHERE name = :name";
 
 
             // conectamos con la base de datos
@@ -129,14 +129,14 @@ class accountModel extends Model
 
             if ($stmt->rowCount() > 0) {
                 return FALSE;
-            } 
+            }
 
             return TRUE;
 
         } catch (PDOException $e) {
 
             // error base de datos
-            $this->handleError($e); 
+            $this->handleError($e);
         }
     }
 
@@ -145,7 +145,7 @@ class accountModel extends Model
 
         descripción: comprueba si un email ya existe en la base de datos, 
         devuelve verdadero si es un valor único
-        
+
         @param: email del usuario
 
     */
@@ -155,7 +155,7 @@ class accountModel extends Model
         try {
 
             // sentencia sql
-            $sql = "SELECT * FROM users WHERE email = :email"; 
+            $sql = "SELECT * FROM users WHERE email = :email";
 
             // conectamos con la base de datos
             $fp = $this->db->connect();
@@ -171,15 +171,15 @@ class accountModel extends Model
 
             if ($stmt->rowCount() > 0) {
                 return FALSE;
-            } 
+            }
 
             return TRUE;
 
         } catch (PDOException $e) {
 
             // error base de datos
-            $this->handleError($e); 
-           
+            $this->handleError($e);
+
         }
     }
 
@@ -224,64 +224,73 @@ class accountModel extends Model
         } catch (PDOException $e) {
 
             // error base de datos
-            $this->handleError($e); 
-            
+            $this->handleError($e);
+
         }
     }
 
     /*
         método: delete($id)
-
-        descripción: elimina definitivamente un usuario. Tambien elimina los registros 
-        asociados en la tabla de roles_users
-
-        @param: 
-
-            - id: id del usuario
-
+        descripción: elimina definitivamente un usuario y todos sus registros asociados 
+        (citas y roles) utilizando una transacción.
+        @param: - id: id del usuario
     */
     public function delete($id)
     {
-
         try {
-
-            // sentencia sql
-            $sql = "DELETE FROM users WHERE id = :id";
-
             // conectamos con la base de datos
             $fp = $this->db->connect();
 
-            // ejecuto prepare
-            $stmt = $fp->prepare($sql);
+            // iniciamos transacción
+            $fp->beginTransaction();
 
-            // vinculamos parámetros
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            // Borramos las reservas
+            $sqlCitas = "DELETE FROM citas WHERE user_id = :id";
+            $stmtCitas = $fp->prepare($sqlCitas);
+            $stmtCitas->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtCitas->execute();
 
-            // ejecutamos
-            $stmt->execute();
+            // Borramos los roles
+            $sqlRoles = "DELETE FROM roles_users WHERE user_id = :id";
+            $stmtRoles = $fp->prepare($sqlRoles);
+            $stmtRoles->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtRoles->execute();
 
-            // Devuelvo objeto usuario
-            return $stmt->rowCount();
+            // Finalmente borramos el usuario
+            $sqlUser = "DELETE FROM users WHERE id = :id";
+            $stmtUser = $fp->prepare($sqlUser);
+            $stmtUser->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtUser->execute();
+
+            // Guardamos el número de filas afectadas del usuario
+            $rowCount = $stmtUser->rowCount();
+
+            // Confirmamos los cambios
+            $fp->commit();
+
+            return $rowCount;
 
         } catch (PDOException $e) {
+            // Si algo falla, deshacemos todo
+            if (isset($fp) && $fp->inTransaction()) {
+                $fp->rollBack();
+            }
 
             // error base de datos
-            $this->handleError($e); 
-          
+            $this->handleError($e);
         }
-
-        
     }
 
-    public function handleError(PDOException $e) {
+    public function handleError(PDOException $e)
+    {
         // Incluir y cargar el controlador de errores
         $errorControllerFile = CONTROLLER_PATH . ERROR_CONTROLLER . '.php';
-        
+
         if (file_exists($errorControllerFile)) {
             require_once $errorControllerFile;
             $mensaje = $e->getMessage() . " en la línea " . $e->getLine() . " del archivo " . $e->getFile();
             $controller = new Errores('DE BASE DE DATOS', 'Mensaje de Error: ', $mensaje);
-            
+
         } else {
             // Fallback en caso de que el controlador de errores no exista
             echo "Error crítico: " . $e->getMessage();
@@ -289,7 +298,7 @@ class accountModel extends Model
         }
     }
 
-    
+
 
 
 

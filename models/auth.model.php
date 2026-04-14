@@ -326,6 +326,7 @@ class authModel extends Model
             require_once $errorControllerFile;
             $mensaje = $e->getMessage() . " en la línea " . $e->getLine() . " del archivo " . $e->getFile();
             $controller = new Errores('DE BASE DE DATOS', 'Mensaje de Error: ', $mensaje);
+            exit();
 
         } else {
             // Fallback en caso de que el controlador de errores no exista

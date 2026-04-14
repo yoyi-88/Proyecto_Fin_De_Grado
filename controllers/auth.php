@@ -19,7 +19,7 @@ class Auth extends Controller
             URL asociada: auth/login
             Vista asociada: views/auth/login/index.php
             Modelo asociado: models/auth.model.php
-           
+
         */
 
     function login()
@@ -32,7 +32,7 @@ class Auth extends Controller
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
-        
+
 
         // Inicializo los campos del formulario
         $this->view->email = null;
@@ -104,8 +104,8 @@ class Auth extends Controller
         // Validación de los datos del formulario
 
         // Creo un array asociativo para almacenar los posibles errores del formulario
-        $errors    = [];
-        $validate  = true;
+        $errors = [];
+        $validate = true;
 
         // Vallidación email
         // Reglas de validación: obligatorio, formato email y existir en la tabla user
@@ -117,7 +117,7 @@ class Auth extends Controller
             $validate = false;
         }
 
-       
+
         // Solo voy a validar el email y el password si el email es correcto
         if ($validate) {
 
@@ -148,7 +148,7 @@ class Auth extends Controller
 
             // Almaceno los errores en la sesión
             $_SESSION['errors'] = $errors;
-            
+
             // Almaceno email
             $_SESSION['email'] = $email;
 
@@ -166,7 +166,7 @@ class Auth extends Controller
         session_regenerate_id(true);
 
         // - Almaceno los datos del usuario en la sesión
-        // - Redirecciono al panel de control de De Mi Casa a la Tuyas
+        // - Redirecciono al panel de control de De Mi Casa a la Tuya
 
         // Almaceno los datos del usuario en la sesión
         $_SESSION['user_id'] = $user->id;
@@ -177,11 +177,11 @@ class Auth extends Controller
         $_SESSION['role_id'] = $this->model->get_id_role_user($user->id);
         $_SESSION['role_name'] = $this->model->get_name_role_user($_SESSION['role_id']);
 
-         // Generar mensaje de inicio de sesión
-        $_SESSION['mensaje'] = "Usuario ". $user->name. " ha iniciado sesión.";
+        // Generar mensaje de inicio de sesión
+        $_SESSION['mensaje'] = "Usuario " . $user->name . " ha iniciado sesión.";
 
         // redirección al panel de control
-        header("location:". URL. "main");
+        header("location:" . URL . "main");
         exit();
     }
 
@@ -193,8 +193,9 @@ class Auth extends Controller
             - Email
             - Password
     */
-    public function register() {
-        
+    public function register()
+    {
+
         // inicio o continuo la sesión
         sec_session_start();
 
@@ -202,7 +203,7 @@ class Auth extends Controller
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
-                
+
         // Inicializo los campos del formulario
         $this->view->name = null;
         $this->view->email = null;
@@ -248,7 +249,7 @@ class Auth extends Controller
             - En caso de validación. Añade usuario con perfil de registrado
 
         url asociada: /auth/validate_register()
-        
+
         POST: detalles del nuevo usuario
 
             - name
@@ -256,8 +257,9 @@ class Auth extends Controller
             - password
             - password-confirm
     */
-    public function validate_register(){
-        
+    public function validate_register()
+    {
+
         // inicio o continúo sesión
         sec_session_start();
 
@@ -272,7 +274,7 @@ class Auth extends Controller
         $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
         $password = filter_var($_POST['password'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
         $password_confirm = filter_var($_POST['password_confirm'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-
+        $enlace_login = "URL . 'auth/login";
         // Validación del formulario de registro
 
         // Creo un array para almacenar los errores
@@ -298,14 +300,14 @@ class Auth extends Controller
         } else if ($this->model->validate_exists_email($email)) {
             $errors['email'] = 'El email ya ha sido registrado';
         }
-       
+
         // Validación password
         // Reglas: obligatorio, longitud mínima 7 caracteres, campos coincidentes
         if (empty($password)) {
             $errors['password'] = 'La contraseña es obligatoria';
         } else if (strlen($password) < 7) {
             $errors['password'] = 'La contraseña debe tener al menos 7 caracteres';
-        } else if (strcmp($password, $password_confirm) !== 0 ) {
+        } else if (strcmp($password, $password_confirm) !== 0) {
             $errors['password'] = 'Las contraseñas no son coincidentes';
         }
 
@@ -340,15 +342,48 @@ class Auth extends Controller
         $id = $this->model->create($name, $email, $password);
 
         // Email de registro
-        $asunto = "Bienvenido a De Mi Casa a la Tuya";
-        $cuerpo_mensaje = "¡Hola $name!\n\n";
-        $cuerpo_mensaje .= "Bienvenido a nuestra plataforma. Tu registro se ha completado con éxito.\n\n";
-        $cuerpo_mensaje .= "Aquí tienes tus datos de registro:\n";
-        $cuerpo_mensaje .= "- Nombre: $name\n";
-        $cuerpo_mensaje .= "- Usuario (email): $email\n";
-        $cuerpo_mensaje .= "- Password: $password\n\n";
-        $cuerpo_mensaje .= "¡Esperamos que disfrutes de nuestros servicios!\n\nUn saludo,\nEl equipo de Administración.";
+        $asunto = "¡Bienvenido a De Mi Casa a la Tuya, " . $name . "!";
+        $cuerpo_mensaje = <<<HTML
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 40px 0;">
+    
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(17, 35, 49, 0.08);">
         
+        <div style="background-color: #0F4C75; padding: 40px 20px; text-align: center;">
+            <h1 style="margin: 0; color: #ffffff; font-family: Georgia, serif; font-size: 28px; font-weight: normal;">De Mi Casa a la Tuya</h1>
+            <p style="margin: 10px 0 0 0; color: #D1A054; font-size: 16px; letter-spacing: 1px;">ALTA COCINA A DOMICILIO</p>
+        </div>
+
+        <div style="padding: 40px 30px; color: #3B4A53; line-height: 1.6; font-size: 16px;">
+            <p style="margin-top: 0;">¡Hola <strong>{$name}</strong>!</p>
+            
+            <p>Nos hace muchísima ilusión darte la bienvenida. Tu cuenta se ha creado con éxito y ya formas parte de nuestra exclusiva comunidad gastronómica.</p>
+            
+            <div style="background-color: #f8f9fa; border-left: 4px solid #D1A054; padding: 20px; margin: 30px 0; border-radius: 0 4px 4px 0;">
+                <p style="margin: 0 0 10px 0; font-size: 14px; color: #6c757d; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">Tus datos de acceso</p>
+                <p style="margin: 0;"><strong>Usuario:</strong> {$email}</p>
+                <p style="margin: 10px 0 0 0; font-size: 13px; color: #6c757d;"><em>(Por tu seguridad, nunca enviaremos tu contraseña por correo. Usarás la que introdujiste al registrarte).</em></p>
+            </div>
+
+            <p>A partir de ahora, puedes acceder a tu panel para descubrir nuestra carta, reservar fechas y gestionar tus experiencias.</p>
+            
+            <div style="text-align: center; margin: 40px 0 20px 0;">
+                <a href="{$enlace_login}" style="background-color: #0F4C75; color: #ffffff; text-decoration: none; padding: 14px 30px; border-radius: 5px; font-weight: bold; display: inline-block;">Acceder a mi cuenta</a>
+            </div>
+        </div>
+
+        <div style="background-color: #FBF9F4; padding: 20px; text-align: center; border-top: 1px solid #e5e5e5;">
+            <p style="margin: 0; font-size: 13px; color: #6c757d;">&copy; 2026 De Mi Casa a la Tuya.<br>Cocinando momentos únicos.</p>
+        </div>
+    </div>
+</body>
+</html>
+HTML;
+
         $this->enviarEmail($name, $email, $asunto, $cuerpo_mensaje);
 
         // Genero mensaje de éxito
@@ -363,8 +398,9 @@ class Auth extends Controller
         Método: logout()
         Descripción: cierra sesión del usuario autenticado y redirigimos al home de la aplicación
     */
-    public function logout() {
-    // inicio o continuo la sesión
+    public function logout()
+    {
+        // inicio o continuo la sesión
         sec_session_start();
 
         // Destruyo la sesión
@@ -374,7 +410,7 @@ class Auth extends Controller
         header('location:' . URL . 'index');
         exit();
     }
-    
+
     /*
         Envía un email desde el sistema al usuario
     */
@@ -399,7 +435,7 @@ class Auth extends Controller
             // Configurar el email: Remitente (Sistema) -> Destinatario (Usuario)
             $mail->setFrom(SMTP_USER, 'Administración De Mi Casa a la Tuya');
             $mail->addAddress($email, $name);
-            $mail->isHTML(true);                                  
+            $mail->isHTML(true);
             $mail->AltBody = strip_tags($message);
             $mail->Subject = $subject;
             $mail->Body = $message;
@@ -412,18 +448,24 @@ class Auth extends Controller
     }
 
 
-    private function handleError()
+    private function handleError($mensaje_personalizado = null)
     {
         // Incluir y cargar el controlador de errores
         $errorControllerFile = CONTROLLER_PATH . ERROR_CONTROLLER . '.php';
 
         if (file_exists($errorControllerFile)) {
             require_once $errorControllerFile;
-            $mensaje = "Error de validación de seguridad del formulario. Intenta acceder de nuevo desde la página principal";
-            $controller = new Errores('403', 'Mensaje de Error: ', $mensaje);
+            
+            // Si nos pasan un mensaje (ej: fallo de correo), lo usamos. Si no, usamos el del CSRF.
+            $mensaje = $mensaje_personalizado ?? "Error de validación de seguridad del formulario. Intenta acceder de nuevo desde la página principal.";
+            
+            // Si es un error de correo, mostramos un 500. Si es de seguridad, un 403.
+            $codigo = $mensaje_personalizado ? '500' : '403';
+            
+            $controller = new Errores($codigo, 'Mensaje de Error: ', $mensaje);
+            exit(); // Detenemos la ejecución
         } else {
-            // Fallback en caso de que el controlador de errores no exista
-            echo "Error crítico: " . "No se pudo cargar el controlador de errores.";
+            echo "Error crítico: No se pudo cargar el controlador de errores.";
             exit();
         }
     }
@@ -432,7 +474,8 @@ class Auth extends Controller
         Método: forgot_password()
         Descripción: Muestra el formulario para solicitar la recuperación de contraseña
     */
-    public function forgot_password() {
+    public function forgot_password()
+    {
         sec_session_start();
 
         if (empty($_SESSION['csrf_token'])) {
@@ -447,7 +490,8 @@ class Auth extends Controller
         Método: send_reset_token()
         Descripción: Procesa el email, genera el token y envía el correo
     */
-    public function send_reset_token() {
+    public function send_reset_token()
+    {
         sec_session_start();
 
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -477,7 +521,7 @@ class Auth extends Controller
             // Preparamos el email
             $enlace_recuperacion = URL . "auth/reset_password/" . $token;
             $asunto = "Recuperación de contraseña - De Mi Casa a la Tuya";
-            
+
             // HTML del correo
             $mensaje = "
                 <h2>Hola, {$user->name}</h2>
@@ -500,7 +544,8 @@ class Auth extends Controller
         Método: reset_password($params)
         Descripción: Verifica el token en la URL y muestra el formulario para la nueva clave
     */
-    public function reset_password($params) {
+    public function reset_password($params)
+    {
         sec_session_start();
 
         $token = $params[0] ?? '';
@@ -533,7 +578,8 @@ class Auth extends Controller
         Método: update_password()
         Descripción: Procesa la nueva contraseña y actualiza la BD
     */
-    public function update_password() {
+    public function update_password()
+    {
         sec_session_start();
 
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
