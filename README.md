@@ -21,8 +21,15 @@
 **Frontend & Diseño:**
 * **HTML5 & CSS3:** Estructura semántica y estilos personalizados.
 * **Bootstrap 5:** Framework CSS para un diseño *responsive*, sistema de rejillas y componentes UI (tarjetas, modales, alertas).
-* **Bootstrap Icons:** Sistema de iconografía vectorial (`bi bi-*`).
 * **JavaScript (Vanilla):** Interactividad del lado del cliente.
+
+**Librerías de Terceros (Frontend):**
+* **FullCalendar.js:** Implementación del calendario interactivo para la gestión de reservas del Chef. 
+* **Chart.js:** Generación de gráficos dinámicos en el Dashboard de administración para la visualización de métricas.
+* **Toastify JS:** Sistema de notificaciones flotantes para feedback en tiempo real (éxitos, errores, avisos).
+* **AOS (Animate On Scroll):** Biblioteca de animaciones para una experiencia de usuario fluida y moderna al navegar.
+* **Google Fonts:** Tipografías personalizadas para reforzar la identidad visual premium.
+* **Bootstrap Icons:** Sistema de iconografía profesional.
 
 **Librerías y Ecosistema:**
 * **Composer:** Gestor de dependencias de PHP.
