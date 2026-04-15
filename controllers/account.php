@@ -426,8 +426,49 @@ class Account extends Controller
         // Elimino el usuario
         $this->model->delete($_SESSION['user_id']);
 
-        $asunto = "Baja de perfil en De Mi Casa a la Tuya";
-        $cuerpo_mensaje = "¡Hola $nombre_usuario!\n\nTe confirmamos que tu perfil ha sido eliminado exitosamente de nuestra plataforma. Sentimos verte marchar.\n\nUn saludo,\nEl equipo de De Mi Casa a la Tuya.";
+        $asunto = "Confirmación de baja - De Mi Casa a la Tuya";
+        $cuerpo_mensaje = <<<HTML
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 40px 0;">
+    
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(17, 35, 49, 0.08);">
+        
+        <div style="background-color: #0F4C75; padding: 40px 20px; text-align: center;">
+            <h1 style="margin: 0; color: #ffffff; font-family: Georgia, serif; font-size: 28px; font-weight: normal;">De Mi Casa a la Tuya</h1>
+            <p style="margin: 10px 0 0 0; color: #D1A054; font-size: 16px; letter-spacing: 1px;">ALTA COCINA A DOMICILIO</p>
+        </div>
+
+        <div style="padding: 40px 30px; color: #3B4A53; line-height: 1.6; font-size: 16px;">
+            <p style="margin-top: 0;">¡Hola <strong>{$nombre_usuario}</strong>,</p>
+            
+            <p>Te escribimos para confirmarte que tu cuenta ha sido eliminada correctamente de nuestra plataforma, tal y como solicitaste.</p>
+            
+            <div style="background-color: #f8f9fa; border-left: 4px solid #7A8B70; padding: 20px; margin: 30px 0; border-radius: 0 4px 4px 0;">
+                <p style="margin: 0; font-size: 14px; color: #555;">
+                    <strong>Confirmación de borrado:</strong> Todos tus datos personales, preferencias y el historial de reservas han sido destruidos de forma segura de nuestros servidores, en cumplimiento estricto con nuestra política de privacidad y protección de datos.
+                </p>
+            </div>
+
+            <p>Ha sido un verdadero placer tenerte en nuestra comunidad gastronómica. Si en el futuro te apetece volver a disfrutar de la alta cocina sin moverte de tu salón, nuestras puertas (y nuestros fogones) siempre estarán abiertos para ti.</p>
+            
+            <p style="margin-top: 40px; margin-bottom: 0;">Un cordial saludo,<br>
+            <strong>Rafael Gómez Albela</strong><br>
+            <span style="font-size: 14px; color: #6c757d;">Chef de De Mi Casa a la Tuya</span></p>
+        </div>
+
+        <div style="background-color: #FBF9F4; padding: 20px; text-align: center; border-top: 1px solid #e5e5e5;">
+            <p style="margin: 0; font-size: 13px; color: #6c757d;">&copy; 2026 De Mi Casa a la Tuya.<br>Esperamos volver a verte pronto.</p>
+        </div>
+
+    </div>
+    
+</body>
+</html>
+HTML;
         $this->enviarEmail($nombre_usuario, $email_usuario, $asunto, $cuerpo_mensaje);
 
         
@@ -483,6 +524,7 @@ class Account extends Controller
             // Configurar el email: Remitente (Sistema) -> Destinatario (Usuario)
             $mail->setFrom(SMTP_USER, 'Administración De Mi Casa a la Tuya');
             $mail->addAddress($email, $name);
+            $mail->isHTML(true);
             $mail->Subject = $subject;
             $mail->Body = $message;
 
