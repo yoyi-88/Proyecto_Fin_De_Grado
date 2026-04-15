@@ -208,7 +208,7 @@ class Citas extends Controller
                         <p><strong>Nuevo Estado:</strong> <span style='font-size: 1.2em; text-transform: uppercase;'>{$estado_nuevo}</span></p>
                     </div>
                     
-                    <p>Un saludo cordial,<br><strong>El equipo de Chef Privado</strong></p>
+                    <p>Un saludo cordial,<br><strong>El equipo de De Mi Casa a la Tuya</strong></p>
                 </div>
             ";
 
