@@ -423,44 +423,26 @@ class Account extends Controller
         $usuario_a_borrar = $this->model->getUserId($_SESSION['user_id']);
         $email_usuario = $usuario_a_borrar->email;
 
+        // Elimino el usuario
+        $this->model->delete($_SESSION['user_id']);
+
         $asunto = "Baja de perfil en De Mi Casa a la Tuya";
         $cuerpo_mensaje = "¡Hola $nombre_usuario!\n\nTe confirmamos que tu perfil ha sido eliminado exitosamente de nuestra plataforma. Sentimos verte marchar.\n\nUn saludo,\nEl equipo de De Mi Casa a la Tuya.";
         $this->enviarEmail($nombre_usuario, $email_usuario, $asunto, $cuerpo_mensaje);
 
-        // Elimino el usuario
-        $this->model->delete($_SESSION['user_id']);
+        
 
         //Limpieza total de la sesión
         $_SESSION = [];
 
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+
         // Cierro la sesión
         session_destroy();
 
-        // Borramos la cookie del navegador
-        if (ini_get("session.use_cookies")) {
-            $params = session_get_cookie_params();
-            setcookie(
-                session_name(),
-                '',
-                time() - 42000,
-                $params["path"],
-                $params["domain"],
-                $params["secure"],
-                $params["httponly"]
-            );
-        }
-
-        // Elimino la cookie de sesión
-        setcookie(session_name(), '', time() - 3600);
-
-        // vuelvo a abrir sesión
-        sec_session_start();
-
-        // Genero mensaje de éxito
-        $_SESSION['mensaje'] = 'Cuenta usuario eliminada correctamente';
-
         // Redirecciono a la vista principal de perfil
-        header('location:' . URL . 'auth/login');
+        header('location:' . URL . 'auth/login?deleted=true');
         exit();
     }
 
