@@ -52,20 +52,20 @@
             </div>
 
             <div class="col-md-7 p-5">
-                <span class="badge bg-light text-primary border border-primary mb-3 px-3 py-2 letter-spacing-1">SOBRE MÍ</span>
-                <h2 class="chef-name mb-4">Rafael Gómez Albela</h2>
+                <span class="badge bg-light text-primary border border-primary mb-3 px-3 py-2 letter-spacing-1" data-aos="zoom-in-down">SOBRE MÍ</span>
+                <h2 class="chef-name mb-4" data-aos="zoom-in">Rafael Gómez Albela</h2>
                 
-                <p class="text-muted lead fs-6 mb-4">
+                <p class="text-muted lead fs-6 mb-4" data-aos="zoom-in-up">
                     Tras haber trabajado en numerosas cocinas de diferentes estilos, decidi dar el salto a este proyecto para que puedas degustar la alta gastronomía desde la comodidad de tu casa.
                 </p>
 
                 <ul class="chef-list list-unstyled mb-4">
-                    <li class="mb-3"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle"></i> Graduado en la escuela de hostelería de Cádiz.</li>
-                    <li class="mb-3"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle"></i> Especialista en cocina fusión y técnicas de vanguardia.</li>
-                    <li class="mb-3"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle"></i> Especialista en cocina tradicional.</li>
+                    <li class="mb-3" data-aos="fade-right"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle" data-aos="fade-right"></i> Graduado en la escuela de hostelería de Cádiz.</li>
+                    <li class="mb-3" data-aos="fade-right"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle" data-aos="fade-right"></i> Especialista en cocina fusión y técnicas de vanguardia.</li>
+                    <li class="mb-3" data-aos="fade-right"><i class="bi bi-check2-circle text-primary me-2 fs-5 align-middle" data-aos="fade-right"></i> Especialista en cocina tradicional.</li>
                 </ul>
 
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Firma_de_ejemplo.svg" alt="Firma del Chef" class="chef-signature opacity-50" style="max-height: 60px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Firma_de_ejemplo.svg" alt="Firma del Chef" class="chef-signature opacity-50" style="max-height: 60px;" data-aos="fade-up">
             </div>
 
         </div>
