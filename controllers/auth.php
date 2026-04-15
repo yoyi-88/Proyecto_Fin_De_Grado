@@ -523,12 +523,47 @@ HTML;
             $asunto = "Recuperación de contraseña - De Mi Casa a la Tuya";
 
             // HTML del correo
-            $mensaje = "
-                <h2>Hola, {$user->name}</h2>
-                <p>Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para crear una nueva:</p>
-                <p><a href='{$enlace_recuperacion}' style='padding: 10px 15px; background-color: #212529; color: white; text-decoration: none; border-radius: 5px;'>Restablecer Contraseña</a></p>
-                <p><em>Este enlace caducará en 1 hora. Si no has solicitado este cambio, ignora este correo.</em></p>
-            ";
+            $mensaje = <<<HTML
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 40px 0;">
+    
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(17, 35, 49, 0.08);">
+        
+        <div style="background-color: #0F4C75; padding: 40px 20px; text-align: center;">
+            <h1 style="margin: 0; color: #ffffff; font-family: Georgia, serif; font-size: 28px; font-weight: normal;">De Mi Casa a la Tuya</h1>
+            <p style="margin: 10px 0 0 0; color: #D1A054; font-size: 16px; letter-spacing: 1px;">ALTA COCINA A DOMICILIO</p>
+        </div>
+
+        <div style="padding: 40px 30px; color: #3B4A53; line-height: 1.6; font-size: 16px;">
+            <p style="margin-top: 0;">¡Hola <strong>{$user->name}</strong>!</p>
+            
+            <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta. Entendemos que los despistes ocurren, así que estamos aquí para ayudarte a recuperar el acceso.</p>
+            
+            <div style="text-align: center; margin: 40px 0;">
+                <a href="{$enlace_recuperacion}" style="background-color: #0F4C75; color: #ffffff; text-decoration: none; padding: 14px 30px; border-radius: 5px; font-weight: bold; display: inline-block;">Crear Nueva Contraseña</a>
+            </div>
+            
+            <div style="background-color: #f8f9fa; border-left: 4px solid #F09A54; padding: 20px; margin: 30px 0 0 0; border-radius: 0 4px 4px 0;">
+                <p style="margin: 0 0 10px 0; font-size: 14px; color: #6c757d; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;"><span style="font-size: 16px;">🔒</span> Información de Seguridad</p>
+                <p style="margin: 0; font-size: 14px; color: #555;">
+                    Por motivos de seguridad, este enlace <strong>caducará en 1 hora</strong>. Si no has sido tú quien ha solicitado este cambio, ignora este correo. Tu contraseña actual seguirá siendo la misma y tu cuenta permanecerá totalmente segura.
+                </p>
+            </div>
+        </div>
+
+        <div style="background-color: #FBF9F4; padding: 20px; text-align: center; border-top: 1px solid #e5e5e5;">
+            <p style="margin: 0; font-size: 13px; color: #6c757d;">&copy; 2026 De Mi Casa a la Tuya.<br>Cocinando momentos únicos.</p>
+        </div>
+
+    </div>
+    
+</body>
+</html>
+HTML;
 
             // Enviar correo (Asegúrate de tener $mail->isHTML(true); en tu método enviarEmail de Auth)
             $this->enviarEmail($user->name, $email, $asunto, $mensaje);
