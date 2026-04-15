@@ -47,6 +47,40 @@ class authModel extends Model
     }
 
     /*
+        Método: get_user_by_id($id)
+        Descripción: Obtiene los detalles de un usuario a partir de su ID
+    */
+    public function get_user_by_id($id)
+    {
+        try {
+            // Generamos select buscando por ID
+            $sql = "SELECT id, name, email, password FROM users WHERE id = :id LIMIT 1";
+            
+            // Conectar con la base de datos
+            $dmcalt = $this->db->connect();
+            
+            // Preparar la consulta obteniendo el objeto PDOStatement
+            $stmt = $dmcalt->prepare($sql);
+            
+            // Tipo fetch
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            
+            // Vincular los parámetros (usamos PARAM_INT porque es un ID numérico)
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            
+            // Ejecutamos sql
+            $stmt->execute();
+            
+            // Devolvemos el objeto o falso
+            return $stmt->fetch();
+
+        } catch (PDOException $e) {
+            // Manejo del error
+            $this->handleError($e);
+        }
+    }
+
+    /*
         Método: get_id_role_user($user_id)
         Descripción: obtiene el id del perfil de un usuario
         @param: 
@@ -267,7 +301,8 @@ class authModel extends Model
     /*
         Guarda el token de recuperación y su fecha de caducidad
     */
-    public function setResetToken($email, $token, $expires_at) {
+    public function setResetToken($email, $token, $expires_at)
+    {
         try {
             $sql = "UPDATE users SET reset_token = :token, reset_token_expires_at = :expires_at WHERE email = :email";
             $conn = $this->db->connect();
@@ -284,7 +319,8 @@ class authModel extends Model
     /*
         Verifica si el token es válido y no ha caducado. Devuelve el ID del usuario si es correcto.
     */
-    public function verifyResetToken($token) {
+    public function verifyResetToken($token)
+    {
         try {
             // Comprobamos que el token coincida y que la fecha de caducidad sea MAYOR que la fecha/hora actual
             $sql = "SELECT id FROM users WHERE reset_token = :token AND reset_token_expires_at > NOW() LIMIT 1";
@@ -292,7 +328,7 @@ class authModel extends Model
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':token', $token, PDO::PARAM_STR);
             $stmt->execute();
-            
+
             $user = $stmt->fetch(PDO::FETCH_OBJ);
             return $user ? $user->id : false;
         } catch (PDOException $e) {
@@ -303,7 +339,8 @@ class authModel extends Model
     /*
         Actualiza la contraseña y borra el token para que no se pueda volver a usar
     */
-    public function updatePasswordWithToken($id, $hashed_password) {
+    public function updatePasswordWithToken($id, $hashed_password)
+    {
         try {
             $sql = "UPDATE users SET password = :password, reset_token = NULL, reset_token_expires_at = NULL WHERE id = :id";
             $conn = $this->db->connect();
@@ -313,6 +350,106 @@ class authModel extends Model
             return $stmt->execute();
         } catch (PDOException $e) {
             return false;
+        }
+    }
+
+    // models/auth.model.php
+
+    /*
+        método: saveRememberToken($user_id, $token, $expires_at)
+        descripción: guarda un token seguro para el autologin
+        @param: - user_id: id del usuario
+                - token: token seguro (hash)
+                - expires_at: fecha de expiración (MySQL datetime string)
+    */
+    public function saveRememberToken($user_id, $token, $expires_at)
+    {
+        try {
+            // sentencia sql: usar REPLACE para sobrescribir tokens viejos si existen
+            $sql = "REPLACE INTO remember_tokens (user_id, token, expires_at) VALUES (:user_id, :token, :expires_at)";
+
+            // conectamos con la base de datos
+            $fp = $this->db->connect();
+
+            // ejecuto prepare
+            $stmt = $fp->prepare($sql);
+
+            // vinculamos parámetros
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR, 255);
+            $stmt->bindParam(':expires_at', $expires_at, PDO::PARAM_STR);
+
+            // ejecutamos
+            $stmt->execute();
+
+            return $stmt->rowCount();
+
+        } catch (PDOException $e) {
+            $this->handleError($e);
+        }
+    }
+
+    /*
+        método: getRememberToken($token)
+        descripción: obtiene la info de un token para autologin
+        @param: token seguro
+    */
+    public function getRememberToken($token)
+    {
+        try {
+            // sentencia sql: buscar token que no haya expirado
+            $sql = "SELECT * FROM remember_tokens WHERE token = :token AND expires_at > NOW() LIMIT 1";
+
+            // conectamos con la base de datos
+            $fp = $this->db->connect();
+
+            // ejecuto prepare
+            $stmt = $fp->prepare($sql);
+
+            // vinculamos parámetros
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR, 255);
+
+            // ejecutamos
+            $stmt->execute();
+
+            // Tipo de fetch
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+
+            // Devuelvo el token encontrado (o null)
+            return $stmt->fetch();
+
+        } catch (PDOException $e) {
+            $this->handleError($e);
+        }
+    }
+
+    /*
+        método: deleteRememberToken($user_id)
+        descripción: elimina el token de un usuario (al hacer logout)
+        @param: user_id
+    */
+    public function deleteRememberToken($user_id)
+    {
+        try {
+            // sentencia sql
+            $sql = "DELETE FROM remember_tokens WHERE user_id = :user_id";
+
+            // conectamos con la base de datos
+            $fp = $this->db->connect();
+
+            // ejecuto prepare
+            $stmt = $fp->prepare($sql);
+
+            // vinculamos parámetros
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+
+            // ejecutamos
+            $stmt->execute();
+
+            return $stmt->rowCount();
+
+        } catch (PDOException $e) {
+            $this->handleError($e);
         }
     }
 

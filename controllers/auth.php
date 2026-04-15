@@ -101,6 +101,9 @@ class Auth extends Controller
         $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
         $pass = filter_var($_POST['pass'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
 
+        // Obtener valor del checkbox de recordarme
+        $recordar = isset($_POST['remember']) && $_POST['remember'] == 'on';
+
         // Validación de los datos del formulario
 
         // Creo un array asociativo para almacenar los posibles errores del formulario
@@ -176,6 +179,30 @@ class Auth extends Controller
         // Obtengo los datos del rol del usuario
         $_SESSION['role_id'] = $this->model->get_id_role_user($user->id);
         $_SESSION['role_name'] = $this->model->get_name_role_user($_SESSION['role_id']);
+
+        // Recordar usuario
+        if ($recordar) {
+            $token = bin2hex(random_bytes(32));
+
+            // 30 días en segundos
+            $duracion = 30 * 24 * 60 * 60;
+            $timestamp_expiracion = time() + $duracion;
+            $expires_at = date('Y-m-d H:i:s', $timestamp_expiracion);
+
+            $this->model->saveRememberToken($user->id, $token, $expires_at);
+
+            // En localhost, 'secure' DEBE ser false si no existe certificado SSL
+            // El dominio debe ser null o vacío para que funcione correctamente en local
+            setcookie(
+                'remember_token',
+                $token,
+                $timestamp_expiracion,
+                '/',
+                '',      // Dominio vacío para localhost
+                false,   // Secure: false (http://localhost)
+                true     // HttpOnly: true (por seguridad contra JS)
+            );
+        }
 
         // Generar mensaje de inicio de sesión
         $_SESSION['mensaje'] = "Usuario " . $user->name . " ha iniciado sesión.";
@@ -403,6 +430,14 @@ HTML;
         // inicio o continuo la sesión
         sec_session_start();
 
+        // Elimino el token de 'recordar' de la base de datos para este usuario
+        if (isset($_SESSION['user_id'])) {
+            $this->model->deleteRememberToken($_SESSION['user_id']);
+        }
+
+        // Elimino la cookie de 'recordar' del navegador
+        setcookie('remember_token', '', time() - 3600, '/', '', false, true);
+
         // Destruyo la sesión
         sec_session_destroy();
 
@@ -455,13 +490,13 @@ HTML;
 
         if (file_exists($errorControllerFile)) {
             require_once $errorControllerFile;
-            
+
             // Si nos pasan un mensaje (ej: fallo de correo), lo usamos. Si no, usamos el del CSRF.
             $mensaje = $mensaje_personalizado ?? "Error de validación de seguridad del formulario. Intenta acceder de nuevo desde la página principal.";
-            
+
             // Si es un error de correo, mostramos un 500. Si es de seguridad, un 403.
             $codigo = $mensaje_personalizado ? '500' : '403';
-            
+
             $controller = new Errores($codigo, 'Mensaje de Error: ', $mensaje);
             exit(); // Detenemos la ejecución
         } else {
